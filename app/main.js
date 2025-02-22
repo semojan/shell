@@ -26,7 +26,7 @@ function handleType(command) {
     let exists;
     let finalPath;
 
-    const paths = process.env.PATH.split(path.delimiter);
+    const paths = process.env.PATH.split(":");
 
     for (let path of paths) {
       const commandPath = path.join(path, command);
