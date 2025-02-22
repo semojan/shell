@@ -48,12 +48,12 @@ function handleType(command) {
 }
 
 function handleFile(answer){
-  const file = answer.split(" ")[0];
+  const fileName = answer.split(" ")[0];
   const args = answer.split(" ").slice(1);
   const paths = process.env.PATH.split(":");
 
   for (const p of paths) {
-    const filePath = path.join(p, file);
+    const filePath = path.join(p, fileName);
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
         execFileSync(filePath, args, { encoding: 'utf-8', stdio: 'inherit' });
       return true;
