@@ -23,8 +23,8 @@ function handleType(command) {
     console.log(`${command} is a shell builtin`);
   } else {
 
-    let exists;
-    let finalPath;
+    let exists = false;
+    let finalPath = null;
 
     const paths = process.env.PATH.split(":");
 
@@ -33,6 +33,7 @@ function handleType(command) {
       if (fs.existsSync(commandPath) && fs.statSync(commandPath).isFile()) {
         exists = true;
         finalPath = commandPath; 
+        break;
       }
     }
 
