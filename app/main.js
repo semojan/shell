@@ -2,6 +2,7 @@ const readline = require("readline");
 const { exit } = require("process");
 const path = require("path");
 const fs = require("fs");
+const { execFileSync } = require('child_process');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -28,7 +29,7 @@ function handleType(command) {
 
     const paths = process.env.PATH.split(":");
 
-    for (let p of paths) {
+    for (const p of paths) {
       const commandPath = path.join(p, command);
       if (fs.existsSync(commandPath) && fs.statSync(commandPath).isFile()) {
         exists = true;
@@ -43,6 +44,22 @@ function handleType(command) {
       console.log(`${command}: not found`);
     }
 
+  }
+}
+
+function handleFile(answer){
+  const file = answer.split(" ")[0];
+  const args = answer.split(" ").slice(1);
+  const paths = process.env.PATH.split(":");
+
+  for (const p of paths) {
+    const filePath = path.join(p, file);
+    if (fs.existsSync(commandPath) && fs.statSync(commandPath).isFile()) {
+      execFileSync(filePath, args, { encoding: 'utf-8', stdio: 'inherit' });
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 
@@ -63,7 +80,10 @@ function prompt() {
       handleType(command);
 
     } else {
-      console.log(`${answer}: command not found`);
+      let isFile = handleFile(answer);
+      if(!isFile){
+        console.log(`${answer}: command not found`);
+      }
     }
 
     prompt();
