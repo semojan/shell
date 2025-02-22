@@ -28,8 +28,8 @@ function handleType(command) {
 
     const paths = process.env.PATH.split(":");
 
-    for (let path of paths) {
-      const commandPath = path.join(path, command);
+    for (let p of paths) {
+      const commandPath = path.join(p, command);
       if (fs.existsSync(commandPath) && fs.statSync(commandPath).isFile()) {
         exists = true;
         finalPath = commandPath;
