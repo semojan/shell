@@ -32,7 +32,7 @@ function handleType(command) {
       const commandPath = path.join(p, command);
       if (fs.existsSync(commandPath) && fs.statSync(commandPath).isFile()) {
         exists = true;
-        finalPath = commandPath;
+        finalPath = commandPath; 
       }
     }
 
