@@ -27,7 +27,6 @@ function handleType(command) {
     let finalPath;
 
     const paths = process.env.PATH.split(path.delimiter);
-    console.log("del : " + path.delimiter);
 
     for (let path of paths) {
       const commandPath = path.join(path, command);
