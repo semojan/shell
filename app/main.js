@@ -10,8 +10,13 @@ function prompt(){
   rl.question("$ ", (answer) => {
     if (answer === "exit 0"){
       exit(0);
+    } else if (answer.startsWith( "echo " )) {
+      const text = answer.split("echo ");
+      console.log(text[1]);
+    } else {
+      console.log(`${answer}: command not found`);
     }
-    console.log(`${answer}: command not found`);
+
     prompt();
   });
 }
