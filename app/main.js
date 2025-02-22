@@ -55,7 +55,7 @@ function handleFile(answer){
   for (const p of paths) {
     const filePath = path.join(p, fileName);
       if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-        execFileSync(filePath, args, { encoding: 'utf-8', stdio: 'inherit' });
+        execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
       return true;
     } else {
       return false;
