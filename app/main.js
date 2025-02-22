@@ -6,5 +6,6 @@ const rl = readline.createInterface({
 });
 
 rl.question("$ ", (answer) => {
+  console.log(`${answer}: command not found\n`);
   rl.close();
 });
