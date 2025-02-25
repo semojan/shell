@@ -15,7 +15,7 @@ function handleCd(inPath) {
   if (fs.existsSync(inPath) && fs.statSync(inPath).isDirectory()){
     process.chdir(inPath);
   } else {
-    console.log(`cd: ${inPath}: no such file or directory`);
+    console.log(`cd: ${inPath}: No such file or directory`);
   }
 }
 
