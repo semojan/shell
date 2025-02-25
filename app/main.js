@@ -13,6 +13,10 @@ const builtin = ["cd", "echo", "exit", "pwd", "type"];
 
 function handleCd(inPath) {
 
+  if (inPath === "~"){
+    inPath = process.env.HOME || "/home/user";
+  }
+
   const newPath = path.resolve(process.cwd(), inPath);
   if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()){
     process.chdir(newPath);
