@@ -12,11 +12,14 @@ const rl = readline.createInterface({
 const builtin = ["cd", "echo", "exit", "pwd", "type"];
 
 function handleCd(inPath) {
-  if (fs.existsSync(inPath) && fs.statSync(inPath).isDirectory()){
-    process.chdir(inPath);
+
+  const newPath = path.resolve(process.cwd(), inPath);
+  if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()){
+    process.chdir(newPath);
   } else {
-    console.log(`cd: ${inPath}: No such file or directory`);
+    console.log(`cd: ${newPath}: No such file or directory`);
   }
+
 }
 
 function handleEcho(text) {
