@@ -9,7 +9,15 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const builtin = ["echo", "exit", "pwd", "type"];
+const builtin = ["cd", "echo", "exit", "pwd", "type"];
+
+function handleCd(inPath) {
+  if (fs.existsSync(inPath) && fs.statSync(inPath).isDirectory()){
+    process.chdir(inPath);
+  } else {
+    console.log(`cd: ${inPath}: no such file or directory`);
+  }
+}
 
 function handleEcho(text) {
   console.log(text);
@@ -72,6 +80,11 @@ function prompt() {
 
     if (answer === "exit 0") {
       handleExit();
+    } else if(answer.startsWith("cd ")) {
+
+      const inPath = answer.split("cd ")[1];
+      handleCd(inPath);
+
     } else if (answer.startsWith("echo ")) {
 
       const text = answer.split("echo ")[1];
