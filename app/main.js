@@ -9,7 +9,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const builtin = ["echo", "exit", "type"];
+const builtin = ["echo", "exit", "pwd", "type"];
 
 function handleEcho(text) {
   console.log(text);
@@ -17,6 +17,10 @@ function handleEcho(text) {
 
 function handleExit() {
   exit(0);
+}
+
+function handlePwd (){
+  console.log(process.cwd());
 }
 
 function handleType(command) {
@@ -72,6 +76,10 @@ function prompt() {
 
       const text = answer.split("echo ")[1];
       handleEcho(text);
+
+    } else if (answer === "pwd"){
+
+      handlePwd();
 
     } else if (answer.startsWith("type")) {
 
