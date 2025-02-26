@@ -32,6 +32,8 @@ function handleEcho(text) {
     text = text.replaceAll("'", "");
   }
 
+  text = text.replaceAll(/\s+/g , " ");
+
   console.log(text);
 }
 
