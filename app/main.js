@@ -84,9 +84,9 @@ function handleType(command) {
 
 function handleFile(answer){
   const fileName = answer.split(" ")[0];
-  const args = answer.split(" ").slice(1);
+  const args = answer.split(fileName + " ")[1];
   const paths = process.env.PATH.split(":");
-
+  
   let filePath;
   for (const p of paths) {
     // pToCheck = path.join(p, fileName);
@@ -100,7 +100,8 @@ function handleFile(answer){
   }
   
   if(filePath){
-    execSync(answer).toString().trim();
+    output = execSync(answer).toString().trim();
+    console.log(output);
     return true;
   }
   return false;
