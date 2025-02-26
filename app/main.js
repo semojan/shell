@@ -99,7 +99,7 @@ function handleFile(answer){
   }
 
   if(filePath){
-    execSync(command).toString().trim();
+    execSync(answer).toString().trim();
     return true;
   }
   return false;
