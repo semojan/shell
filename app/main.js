@@ -30,6 +30,8 @@ function handleEcho(text) {
 
   if (text.startsWith("'") && text.endsWith("'")){
     text = text.replaceAll("'", "");
+    console.log(text);
+    return;
   }
 
   text = text.replaceAll(/\s+/g , " ");
