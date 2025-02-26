@@ -28,8 +28,9 @@ function handleCd(inPath) {
 
 function handleEcho(text) {
 
-  const slices = text.slice("'");
+  const slices = text.split("'");
   const n = slices.length;
+  console.log(n)
   if(n >= 3 && slices[0] === "" && slices[n -1] === ""){
     console.log(slices.slice(1, n-1).join(""));
     return;
