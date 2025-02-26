@@ -90,7 +90,7 @@ function handleFile(answer){
   let filePath;
   for (const p of paths) {
     // pToCheck = path.join(p, fileName);
-    if (fs.existsSync(pToCheck) && fs.readdirSync(pToCheck).includes(program)) {
+    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
         // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
       filePath = p;
       break;
