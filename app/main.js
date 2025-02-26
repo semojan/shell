@@ -89,15 +89,16 @@ function handleFile(answer){
 
   let filePath;
   for (const p of paths) {
-    pToCheck = path.join(p, fileName);
-      if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+    // pToCheck = path.join(p, fileName);
+    if (fs.existsSync(pToCheck) && fs.readdirSync(pToCheck).includes(program)) {
         // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-        filePath = pToCheck;
+      filePath = p;
+      break;
     } else {
       filePath = null;
     }
   }
-
+  
   if(filePath){
     execSync(answer).toString().trim();
     return true;
