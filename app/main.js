@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require("process");
 const path = require("path");
 const fs = require("fs");
-const { execFileSync } = require('child_process');
+const { execSync } = require('child_process');
 
 const rl = readline.createInterface({
   input: process.stdin,
