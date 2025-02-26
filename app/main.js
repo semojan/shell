@@ -87,15 +87,30 @@ function handleFile(answer){
   const args = answer.split(" ").slice(1);
   const paths = process.env.PATH.split(":");
 
+  let filePath;
   for (const p of paths) {
-    const filePath = path.join(p, fileName);
-      if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
-        execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-      return true;
+    pToCheck = path.join(p, fileName);
+      if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+        // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+        filePath = pToCheck;
     } else {
-      return false;
+      filePath = null;
     }
   }
+
+  if(filePath){
+    execSync(command).toString().trim();
+    return true;
+  }
+  return false;
+}
+
+function handledExternalProgram(answer) {
+  const program = answer.split(" ")[0];
+
+  const paths = PATH.split(":");
+  
+  
 }
 
 function prompt() {
