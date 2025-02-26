@@ -28,15 +28,22 @@ function handleCd(inPath) {
 
 function handleEcho(text) {
 
-  if (text.startsWith("'") && text.endsWith("'")){
-    text = text.replaceAll("'", "");
-    console.log(text);
-    return;
+  const slices = text.slice("'");
+  const n = slices.length;
+  if(n >= 3 && slices[0] === "" && slices[n -1] === ""){
+    slices.slice(1, n-1);
   }
+  // if (text.startsWith("'") && text.endsWith("'")){
+  //   text = text.replaceAll("'", "");
+  //   console.log(text);
+  //   return;
+  // }
 
-  text = text.replaceAll(/\s+/g , " ");
+  // text = text.replaceAll(/\s+/g , " ");
 
-  console.log(text);
+  result = slices.join(" ");
+
+  console.log(result);
 }
 
 function handleExit() {
