@@ -31,7 +31,7 @@ function handleEcho(text) {
   const slices = text.slice("'");
   const n = slices.length;
   if(n >= 3 && slices[0] === "" && slices[n -1] === ""){
-    console.log(slices.slice(1, n-1));
+    console.log(slices.slice(1, n-1).join(""));
     return;
   }
 
