@@ -33,6 +33,7 @@ function handleEcho(text) {
   if(n >= 3 && slices[0] === "" && slices[n -1] === ""){
     slices.slice(1, n-1);
   }
+  
   // if (text.startsWith("'") && text.endsWith("'")){
   //   text = text.replaceAll("'", "");
   //   console.log(text);
