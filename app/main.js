@@ -64,9 +64,6 @@ function handleEcho(text) {
         }
       }
     }
-    // console.log("char: " + char)
-    // console.log("escaped: " + escaped)
-    // console.log("quote: " + inDoubleQuote)
   }
 
   // text = text.replace(/\s+/g, " ");
