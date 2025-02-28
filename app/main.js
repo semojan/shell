@@ -161,7 +161,7 @@ function handleFile(answer) {
       output = execSync(answer).toString().trim();
     } else {
       const destinationPath = path.join(filePath, fileName);
-      output = execFileSync(destinationPath, args, { encoding: 'utf-8', stdio: 'inherit', argv0: executable });
+      output = execFileSync(destinationPath, args, { encoding: 'utf-8', stdio: 'inherit', argv0: fileName });
     }
 
     return { isFile: true, fileResult: output };
