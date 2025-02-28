@@ -20,7 +20,7 @@ function handleCd(inPath) {
   const newPath = path.resolve(process.cwd(), inPath);
   if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()) {
     process.chdir(newPath);
-    return "";
+    return null;
   } else {
     return `cd: ${newPath}: No such file or directory`;
   }
@@ -109,7 +109,7 @@ function handleFile(answer) {
 function prompt() {
   rl.question("$ ", (answer) => {
 
-    let result = "";
+    let result = null;
     if (answer === "exit 0") {
       handleExit();
     } else if (answer.startsWith("cd ")) {
@@ -140,7 +140,7 @@ function prompt() {
       }
     }
 
-    console.log(result);
+    result && console.log(result);
 
     prompt();
   });
