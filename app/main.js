@@ -31,7 +31,6 @@ function handleEcho(text) {
 
   const hasSingleQuote = text.startsWith("'");
   const slices = hasSingleQuote ? text.split("'") : text.split('"');
-  console.log(slices);
   const n = slices.length;
   if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
     return slices.slice(1, n - 1).map(item => item !== "" && item.trim() === "" ? " " : item).join("");
