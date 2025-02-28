@@ -29,23 +29,38 @@ function handleCd(inPath) {
 
 function handleEcho(text) {
 
-  const hasSingleQuote = text.startsWith("'");
-  const slices = hasSingleQuote ? text.split("'") : text.split('"');
-  const n = slices.length;
-  if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
-    return slices.slice(1, n - 1).map(item => item !== "" && item.trim() === "" ? " " : item).join("");
+  // const hasSingleQuote = text.startsWith("'");
+  // const slices = hasSingleQuote ? text.split("'") : text.split('"');
+  // const n = slices.length;
+  // if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
+  //   return slices.slice(1, n - 1).map(item => item !== "" && item.trim() === "" ? " " : item).join("");
+  // }
+
+  let inSingleQuote = false;
+  let inDoubleQuote = false;
+  let escaped = false
+  let output = "";
+
+  for (let i = 0; i < text.length; i++) {
+    let char = text[i];
+
+    if (escaped) {
+      output += char;
+      escaped = false;
+    } else if (char === "\\") {
+      escaped = true;
+    } else if (char === "'" && !inDoubleQuote) {
+      inSingleQuote = !inSingleQuote;
+    } else if (char === '"' && !inSingleQuote) {
+      inDoubleQuote = !inDoubleQuote;
+    } else {
+      output += char;
+    }
   }
 
-  // if (text.startsWith("'") && text.endsWith("'")){
-  //   text = text.replaceAll("'", "");
-  //   console.log(text);
-  //   return;
-  // }
-  text = text.replace(/\\ /g, "\u0001");
-  text = text.replace(/\s+/g, " ");
-  text = text.replace(/\u0001/g, " ");
+  // text = text.replace(/\s+/g, " ");
 
-  return text;
+  return output;
 }
 
 function handleExit() {
