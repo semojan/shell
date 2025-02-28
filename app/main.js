@@ -11,31 +11,7 @@ const rl = readline.createInterface({
 
 const builtin = ["cd", "echo", "exit", "pwd", "type"];
 
-function handleCd(inPath) {
-
-  if (inPath === "~") {
-    inPath = process.env.HOME || "/home/user";
-  }
-
-  const newPath = path.resolve(process.cwd(), inPath);
-  if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()) {
-    process.chdir(newPath);
-    return null;
-  } else {
-    return `cd: ${newPath}: No such file or directory`;
-  }
-
-}
-
-function handleEcho(text) {
-
-  // const hasSingleQuote = text.startsWith("'");
-  // const slices = hasSingleQuote ? text.split("'") : text.split('"');
-  // const n = slices.length;
-  // if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
-  //   return slices.slice(1, n - 1).map(item => item !== "" && item.trim() === "" ? " " : item).join("");
-  // }
-
+function parseQuotedString(text) {
   let inSingleQuote = false;
   let inDoubleQuote = false;
   let escaped = false
@@ -66,6 +42,35 @@ function handleEcho(text) {
     }
   }
 
+  return output;
+}
+
+function handleCd(inPath) {
+
+  if (inPath === "~") {
+    inPath = process.env.HOME || "/home/user";
+  }
+
+  const newPath = path.resolve(process.cwd(), inPath);
+  if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()) {
+    process.chdir(newPath);
+    return null;
+  } else {
+    return `cd: ${newPath}: No such file or directory`;
+  }
+
+}
+
+function handleEcho(text) {
+
+  // const hasSingleQuote = text.startsWith("'");
+  // const slices = hasSingleQuote ? text.split("'") : text.split('"');
+  // const n = slices.length;
+  // if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
+  //   return slices.slice(1, n - 1).map(item => item !== "" && item.trim() === "" ? " " : item).join("");
+  // }
+
+  const output = parseQuotedString(text);
   // text = text.replace(/\s+/g, " ");
 
   return output;
@@ -107,6 +112,9 @@ function handleType(command) {
 }
 
 function handleFile(answer) {
+  if (answer.startsWith("'") || answer.startsWith('"')) {
+    answer = parseQuotedString(answer);
+  }
   const fileName = answer.split(" ")[0];
   const args = answer.split(fileName + " ")[1];
   const paths = process.env.PATH.split(":");
