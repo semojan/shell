@@ -38,6 +38,7 @@ function handleEcho(text) {
 
   let inSingleQuote = false;
   let inDoubleQuote = false;
+  let inQuote = false;
   let escaped = false
   let output = "";
 
@@ -51,10 +52,18 @@ function handleEcho(text) {
       escaped = true;
     } else if (char === "'" && !inDoubleQuote) {
       inSingleQuote = !inSingleQuote;
+      // inQuote = !inQuote;
     } else if (char === '"' && !inSingleQuote) {
       inDoubleQuote = !inDoubleQuote;
+      // inQuote = !inQuote;
     } else {
-      output += char;
+      if (inSingleQuote || inDoubleQuote || char !== " ") {
+        output += char;
+      } else {
+        if (output[output.length - 1] !== " ") {
+          output += " ";
+        }
+      }
     }
   }
 
