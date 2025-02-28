@@ -20,7 +20,7 @@ function handleCd(inPath) {
   const newPath = path.resolve(process.cwd(), inPath);
   if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()) {
     process.chdir(newPath);
-    return;
+    return "";
   } else {
     return `cd: ${newPath}: No such file or directory`;
   }
