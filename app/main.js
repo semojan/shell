@@ -143,24 +143,32 @@ function handleFile(answer) {
 
   const paths = process.env.PATH.split(":");
 
-  let filePath;
+  let filePath = null;
   for (const p of paths) {
-    // pToCheck = path.join(p, fileName);
+    pToCheck = path.join(p, fileName);
     if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
       // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-      filePath = p;
+      filePath = pToCheck;
       break;
-    } else {
-      filePath = null;
     }
   }
 
+  if (!filePath) {
+    return { isFile: false, fileResult: null };
+  }
+
+  try {
+    const output = execFileSync(filePath, args, { encoding: "utf-8" }).trim();
+    return { isFile: true, fileResult: output };
+  } catch (error) {
+    console.error("Error executing file:", error.message);
+    return { isFile: false, fileResult: null };
+  }
   if (filePath) {
     let output = "";
     if (fileName === "cat") {
       output = execSync(answer).toString().trim();
     } else {
-      const destinationPath = path.join(filePath, fileName);
       output = execFileSync(destinationPath, args, { encoding: 'utf-8', stdio: 'inherit', argv0: fileName });
     }
 
