@@ -41,13 +41,15 @@ function handleEcho(text) {
   let escaped = false
   let output = "";
 
+  const escapeSequences = ["\\", "$", '"', "\n"];
+
   for (let i = 0; i < text.length; i++) {
     let char = text[i];
 
     if (escaped) {
       output += char;
       escaped = false;
-    } else if (char === "\\" && !inSingleQuote && !inDoubleQuote) {
+    } else if ((char === "\\" && !inSingleQuote) || (char === "\\" && inDoubleQuote && escapeSequences.includes(text[i + 1]))) {
       escaped = true;
     } else if (char === "'" && !inDoubleQuote) {
       inSingleQuote = !inSingleQuote;
@@ -62,6 +64,9 @@ function handleEcho(text) {
         }
       }
     }
+    // console.log("char: " + char)
+    // console.log("escaped: " + escaped)
+    // console.log("quote: " + inDoubleQuote)
   }
 
   // text = text.replace(/\s+/g, " ");
