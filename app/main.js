@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require("process");
 const path = require("path");
 const fs = require("fs");
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -111,12 +111,36 @@ function handleType(command) {
   }
 }
 
+function seperateQuotedFileName(quotedCmd, quote) {
+  let n = quotedCmd.length;
+  let quotedName = quotedCmd.slice(0, n - 1).join(quote) + quote;
+  return quotedName;
+}
+
 function handleFile(answer) {
-  if (answer.startsWith("'") || answer.startsWith('"')) {
-    answer = parseQuotedString(answer);
+  let quotedCmd = [];
+  let fileName = "";
+  let args = [];
+  let quoted = false;
+
+  if (answer.startsWith("'")) {
+    quotedCmd = answer.split("'");
+    quotedName = seperateQuotedFileName(quotedCmd, "'")
+    quoted = true;
+  } else if (answer.startsWith('"')) {
+    quotedCmd = answer.split('"');
+    quotedName = seperateQuotedFileName(quotedCmd, '"');
+    quoted = true;
   }
-  const fileName = answer.split(" ")[0];
-  const args = answer.split(fileName + " ")[1];
+
+  if (quoted) {
+    fileName = parseQuotedString(quotedName);
+    args = quotedCmd.slice(2);
+  } else {
+    fileName = answer.split(" ")[0];
+    args = answer.split(fileName + " ")[1];
+  }
+
   const paths = process.env.PATH.split(":");
 
   let filePath;
@@ -132,7 +156,13 @@ function handleFile(answer) {
   }
 
   if (filePath) {
-    output = execSync(answer).toString().trim();
+    let output = "";
+    if (fileName === "cat") {
+      output = execSync(answer).toString().trim();
+    } else {
+      output = execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+    }
+
     return { isFile: true, fileResult: output };
   }
   return { isFile: false, fileResult: null };
