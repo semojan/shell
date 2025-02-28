@@ -41,8 +41,9 @@ function handleEcho(text) {
   //   console.log(text);
   //   return;
   // }
-
-  text = text.replaceAll(/\s+/g, " ");
+  text = text.replace(/\\ /g, "\u0001");
+  text = text.replace(/\s+/g, " ");
+  text = text.replace(/\u0001/g, " ");
 
   return text;
 }
