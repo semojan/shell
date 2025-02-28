@@ -101,9 +101,9 @@ function handleFile(answer) {
 
   if (filePath) {
     output = execSync(answer).toString().trim();
-    return { isFile: true, result: output };
+    return { isFile: true, fileResult: output };
   }
-  return { isFile: false, result: null };
+  return { isFile: false, fileResult: null };
 }
 
 function prompt() {
