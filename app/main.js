@@ -160,7 +160,7 @@ function handleFile(answer) {
     // if (fileName === "cat") {
     //   output = execSync(answer).toString().trim();
     // } else {
-    output = execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+    output = execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit', argv0: executable });
     // }
 
     return { isFile: true, fileResult: output };
