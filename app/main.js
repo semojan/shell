@@ -149,15 +149,19 @@ function handleFile(answer) {
 
   for (const p of paths) {
     let pToCheck = path.join(p, fileName);
-    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-      filePath = pToCheck;
-      break;
-    }
-    // if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+    // if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+    //   // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
     //   filePath = pToCheck;
     //   break;
     // }
+    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+      filePath = pToCheck;
+      break;
+    }
+  }
+
+  if (!filePath && fs.existsSync(fileName) && fs.statSync(fileName).isFile()) {
+    filePath = fileName;
   }
 
   if (!filePath) {
