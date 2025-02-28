@@ -132,9 +132,11 @@ function prompt() {
       result = handleType(command);
 
     } else {
-      let { isFile, result } = handleFile(answer);
+      let { isFile, fileResult } = handleFile(answer);
       if (!isFile) {
         result = `${answer}: command not found`;
+      } else {
+        result = fileResult;
       }
     }
 
