@@ -13,26 +13,27 @@ const builtin = ["cd", "echo", "exit", "pwd", "type"];
 
 function handleCd(inPath) {
 
-  if (inPath === "~"){
+  if (inPath === "~") {
     inPath = process.env.HOME || "/home/user";
   }
 
   const newPath = path.resolve(process.cwd(), inPath);
-  if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()){
+  if (fs.existsSync(newPath) && fs.statSync(newPath).isDirectory()) {
     process.chdir(newPath);
+    return;
   } else {
-    console.log(`cd: ${newPath}: No such file or directory`);
+    return `cd: ${newPath}: No such file or directory`;
   }
 
 }
 
 function handleEcho(text) {
 
-  const slices = text.split("'");
+  const hasSingleQuote = text.startsWith("'");
+  const slices = hasSingleQuote ? text.split("'") : text.split('"');
   const n = slices.length;
-  if(n >= 3 && slices[0] === "" && slices[n -1] === ""){
-    console.log(slices.slice(1, n-1).join(""));
-    return;
+  if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
+    return slices.slice(1, n - 1).join("");
   }
 
   // if (text.startsWith("'") && text.endsWith("'")){
@@ -41,22 +42,22 @@ function handleEcho(text) {
   //   return;
   // }
 
-  text = text.replaceAll(/\s+/g , " ");
+  text = text.replaceAll(/\s+/g, " ");
 
-  console.log(text);
+  return text;
 }
 
 function handleExit() {
   exit(0);
 }
 
-function handlePwd (){
-  console.log(process.cwd());
+function handlePwd() {
+  return process.cwd();
 }
 
 function handleType(command) {
   if (builtin.includes(command)) {
-    console.log(`${command} is a shell builtin`);
+    return `${command} is a shell builtin`;
   } else {
 
     let exists = false;
@@ -68,84 +69,76 @@ function handleType(command) {
       const commandPath = path.join(p, command);
       if (fs.existsSync(commandPath) && fs.statSync(commandPath).isFile()) {
         exists = true;
-        finalPath = commandPath; 
+        finalPath = commandPath;
         break;
       }
     }
 
     if (exists) {
-      console.log(`${command} is ${finalPath}`);
+      return `${command} is ${finalPath}`;
     } else {
-      console.log(`${command}: not found`);
+      return `${command}: not found`;
     }
-
   }
 }
 
-function handleFile(answer){
+function handleFile(answer) {
   const fileName = answer.split(" ")[0];
   const args = answer.split(fileName + " ")[1];
   const paths = process.env.PATH.split(":");
-  
+
   let filePath;
   for (const p of paths) {
     // pToCheck = path.join(p, fileName);
     if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-        // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
       filePath = p;
       break;
     } else {
       filePath = null;
     }
   }
-  
-  if(filePath){
+
+  if (filePath) {
     output = execSync(answer).toString().trim();
-    console.log(output);
-    return true;
+    return { isFile: true, result: output };
   }
-  return false;
-}
-
-function handledExternalProgram(answer) {
-  const program = answer.split(" ")[0];
-
-  const paths = PATH.split(":");
-  
-  
+  return { isFile: false, result: null };
 }
 
 function prompt() {
   rl.question("$ ", (answer) => {
 
+    let result = "";
     if (answer === "exit 0") {
       handleExit();
-    } else if(answer.startsWith("cd ")) {
+    } else if (answer.startsWith("cd ")) {
 
       const inPath = answer.split("cd ")[1];
-      handleCd(inPath);
+      result = handleCd(inPath);
 
     } else if (answer.startsWith("echo ")) {
 
       const text = answer.split("echo ")[1];
-      handleEcho(text);
+      result = handleEcho(text);
 
-    } else if (answer === "pwd"){
+    } else if (answer === "pwd") {
 
-      handlePwd();
+      result = handlePwd();
 
     } else if (answer.startsWith("type")) {
 
       const command = answer.split("type ")[1];
-
-      handleType(command);
+      result = handleType(command);
 
     } else {
-      let isFile = handleFile(answer);
-      if(!isFile){
-        console.log(`${answer}: command not found`);
+      let { isFile, result } = handleFile(answer);
+      if (!isFile) {
+        result = `${answer}: command not found`;
       }
     }
+
+    console.log(result);
 
     prompt();
   });
