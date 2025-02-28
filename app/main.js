@@ -137,8 +137,11 @@ function handleFile(answer) {
     fileName = parseQuotedString(quotedName);
     args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
   } else {
-    fileName = answer.split(" ")[0];
-    args = answer.split(fileName + " ")[1];
+    // fileName = answer.split(" ")[0];
+    // args = answer.split(fileName + " ")[1];
+    let parts = answer.split(/\s+/);
+    fileName = parts[0];
+    args = parts.slice(1);
   }
 
   const paths = process.env.PATH.split(":");
@@ -146,15 +149,15 @@ function handleFile(answer) {
 
   for (const p of paths) {
     let pToCheck = path.join(p, fileName);
-    // if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-    //   // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-    //   filePath = pToCheck;
-    //   break;
-    // }
-    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
       filePath = pToCheck;
       break;
     }
+    // if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+    //   filePath = pToCheck;
+    //   break;
+    // }
   }
 
   if (!filePath) {
@@ -162,10 +165,9 @@ function handleFile(answer) {
   }
 
   try {
-    const output = execFileSync(filePath, args, { encoding: "utf-8" }).trim();
+    const output = execFileSync(filePath, args, { encoding: "utf-8", shell: true }).trim();
     return { isFile: true, fileResult: output };
   } catch (error) {
-    console.error("Error executing file:", error.message);
     return { isFile: false, fileResult: null };
   }
 }
