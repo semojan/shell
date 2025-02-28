@@ -135,19 +135,23 @@ function handleFile(answer) {
 
   if (quoted) {
     fileName = parseQuotedString(quotedName);
-    args = quotedCmd.slice(2);
+    args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
   } else {
     fileName = answer.split(" ")[0];
     args = answer.split(fileName + " ")[1];
   }
 
   const paths = process.env.PATH.split(":");
-
   let filePath = null;
+
   for (const p of paths) {
-    pToCheck = path.join(p, fileName);
-    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+    let pToCheck = path.join(p, fileName);
+    // if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+    //   // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+    //   filePath = pToCheck;
+    //   break;
+    // }
+    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
       filePath = pToCheck;
       break;
     }
@@ -164,17 +168,6 @@ function handleFile(answer) {
     console.error("Error executing file:", error.message);
     return { isFile: false, fileResult: null };
   }
-  if (filePath) {
-    let output = "";
-    if (fileName === "cat") {
-      output = execSync(answer).toString().trim();
-    } else {
-      output = execFileSync(destinationPath, args, { encoding: 'utf-8', stdio: 'inherit', argv0: fileName });
-    }
-
-    return { isFile: true, fileResult: output };
-  }
-  return { isFile: false, fileResult: null };
 }
 
 function prompt() {
