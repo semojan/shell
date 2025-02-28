@@ -165,7 +165,7 @@ function handleFile(answer) {
   }
 
   try {
-    const output = execFileSync(filePath, args, { encoding: "utf-8", shell: false }).trim();
+    const output = execFileSync(filePath, args, { encoding: "utf-8", stdio: 'inherit', shell: true }).trim();
     return { isFile: true, fileResult: output };
   } catch (error) {
     return { isFile: false, fileResult: null };
