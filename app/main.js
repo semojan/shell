@@ -157,11 +157,11 @@ function handleFile(answer) {
 
   if (filePath) {
     let output = "";
-    if (fileName === "cat") {
-      output = execSync(answer).toString().trim();
-    } else {
-      output = execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-    }
+    // if (fileName === "cat") {
+    //   output = execSync(answer).toString().trim();
+    // } else {
+    output = execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+    // }
 
     return { isFile: true, fileResult: output };
   }
