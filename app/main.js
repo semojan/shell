@@ -252,7 +252,7 @@ function handleCat(args) {
     arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1")
   );
 
-  let output = null;
+  let output = "";
   for (const filePath of parsedArgs) {
     try {
       const data = fs.readFileSync(filePath, "utf-8");
