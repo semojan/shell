@@ -263,8 +263,7 @@ function handleCat(args) {
     }
   }
 
-  console.log(output); // Ensure output is printed
-  return null; // Ensure the shell continues execution
+  return output; // Ensure the shell continues execution
 }
 
 
