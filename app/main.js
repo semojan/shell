@@ -245,9 +245,13 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
-  // Tokenize arguments while handling escaped quotes properly
-  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g)
-    .map(arg => arg.replace(/^["']|["']$/g, '').replace(/\\(["'])/g, '$1')); // Unescape quotes
+  // Match arguments while preserving quoted filenames
+  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
+  if (!parsedArgs) return "cat: missing file operand";
+
+  parsedArgs = parsedArgs.map(arg =>
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1") // Remove outer quotes & unescape quotes
+  );
 
   let output = "";
   for (const filePath of parsedArgs) {
@@ -263,10 +267,8 @@ function handleCat(args) {
     }
   }
 
-  return output; // Ensure the shell continues execution
+  return output;
 }
-
-
 
 function prompt() {
   rl.question("$ ", (answer) => {
