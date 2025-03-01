@@ -266,7 +266,7 @@ function handleCat(args) {
     }
   }
 
-  console.log(output.trim());
+  console.log(output.trim().replaceAll("\n", ""));
   return null;
 }
 
