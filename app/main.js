@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require("process");
 const path = require("path");
 const fs = require("fs");
-const { execSync, execFileSync } = require('child_process');
+const { execSync, execFileSync, spawn } = require('child_process');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -137,41 +137,38 @@ function handleFile(answer) {
     executable = parseQuotedString(quotedName);
     args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
   } else {
-    // executable = answer.split(" ")[0];
-    // args = answer.split(executable + " ")[1];
+    executable = answer.split(" ")[0];
+    args = answer.split(executable + " ")[1];
     let parts = answer.split(/\s+/);
     executable = parts[0];
     args = parts.slice(1);
   }
 
-  const paths = process.env.PATH.split(":");
-  let filePath = null;
+  // const paths = process.env.PATH.split(":");
+  // let filePath = null;
 
-  for (const p of paths) {
-    let pToCheck = path.join(p, executable);
-    // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
-    //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
-    //   filePath = pToCheck;
-    //   break;
-    // }
-    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
-      filePath = pToCheck;
-      break;
-    }
-  }
-  for (const p of paths) {
-    let destPath = path.join(p, executable);
-    if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
-      execFileSync(destPath, args, {
-        encoding: "utf-8",
-        stdio: "inherit",
-        argv0: executable,
-      });
-      return { isFile: true, fileResult: null };
-    }
-  }
+  // for (const p of paths) {
+  //   let pToCheck = path.join(p, executable);
+  //   // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
+  //   //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
+  //   //   filePath = pToCheck;
+  //   //   break;
+  //   // }
+  //   if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+  //     filePath = pToCheck;
+  //     break;
+  //   }
+  // }
 
-  return { isFile: false, fileResult: null };
+  // for (const p of paths) {
+  //   let destPath = path.join(p, executable);
+  //   if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
+  //     execFileSync(destPath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
+  //     return { isFile: true, fileResult: null };
+  //   }
+  // }
+
+  // return { isFile: false, fileResult: null };
 
   // if (!filePath && fs.existsSync(executable) && fs.statSync(executable).isFile()) {
   //   filePath = executable;
@@ -187,6 +184,38 @@ function handleFile(answer) {
   // } catch (error) {
   //   return { isFile: false, fileResult: null };
   // }
+
+  let present;
+  let fullPath;
+  const pathDirs = process.env.PATH.split(":");
+  for (const dir of pathDirs) {
+    try {
+      const files = fs.readdirSync(dir);
+      if (files.includes(cmd)) {
+        present = true,
+          fullPath = path.join(dir, cmd)
+      }
+    } catch (error) {
+      // Ignore errors like permission denied
+    }
+
+    args = parseQuotedString(args)
+    // console.log(args);
+    return new Promise((resolve) => {
+      const child = spawn(args[0], args.slice(1), {
+        stdio: "inherit",
+      });
+      // Handle command not found error
+      child.on("error", () => {
+        console.log(`${args[0]}: command not found`);
+        resolve(true);
+      });
+      // Resolve when the process exits
+      child.on("close", (code) => {
+        resolve(true);
+      });
+    });
+  }
 }
 
 function handleCat(args) {
