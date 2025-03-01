@@ -242,12 +242,18 @@ function handleFile(answer) {
 // }
 function handleCat(args) {
   if (!args.trim()) {
-    return "cat: missing file operand";
+    console.log("cat: missing file operand");
+    return;
   }
 
+  // Parse arguments properly to handle quoted filenames
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-  if (!parsedArgs) return "cat: missing file operand";
+  if (!parsedArgs) {
+    console.log("cat: missing file operand");
+    return;
+  }
 
+  // Remove surrounding quotes and handle escaped characters correctly
   parsedArgs = parsedArgs.map(arg =>
     arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1")
   );
@@ -259,16 +265,18 @@ function handleCat(args) {
       output += data;
     } catch (err) {
       if (err.code === "ENOENT") {
-        return `cat: ${filePath}: No such file or directory`;
+        console.log(`cat: ${filePath}: No such file or directory`);
+        return;
       } else {
-        return `cat: ${filePath}: Permission denied`;
+        console.log(`cat: ${filePath}: Permission denied`);
+        return;
       }
     }
   }
 
-  console.log(output);
-  return null;
+  console.log(output); // Ensure output is printed
 }
+
 
 function prompt() {
   rl.question("$ ", (answer) => {
