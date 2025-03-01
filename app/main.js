@@ -118,57 +118,57 @@ function seperateQuotedFileName(quotedCmd, quote) {
 }
 
 function handleFile(answer) {
-  let quotedCmd = [];
-  let executable = "";
-  let args = [];
-  let quoted = false;
+  // let quotedCmd = [];
+  // let executable = "";
+  // let args = [];
+  // let quoted = false;
 
-  if (answer.startsWith("'")) {
-    quotedCmd = answer.split("'");
-    quotedName = seperateQuotedFileName(quotedCmd, "'")
-    quoted = true;
-  } else if (answer.startsWith('"')) {
-    quotedCmd = answer.split('"');
-    quotedName = seperateQuotedFileName(quotedCmd, '"');
-    quoted = true;
-  }
+  // if (answer.startsWith("'")) {
+  //   quotedCmd = answer.split("'");
+  //   quotedName = seperateQuotedFileName(quotedCmd, "'")
+  //   quoted = true;
+  // } else if (answer.startsWith('"')) {
+  //   quotedCmd = answer.split('"');
+  //   quotedName = seperateQuotedFileName(quotedCmd, '"');
+  //   quoted = true;
+  // }
 
-  if (quoted) {
-    executable = parseQuotedString(quotedName);
-    args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
-  } else {
-    // executable = answer.split(" ")[0];
-    // args = answer.split(executable + " ")[1];
-    let parts = answer.split(/\s+/);
-    executable = parts[0];
-    args = parts.slice(1);
-  }
+  // if (quoted) {
+  //   executable = parseQuotedString(quotedName);
+  //   args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
+  // } else {
+  //   // executable = answer.split(" ")[0];
+  //   // args = answer.split(executable + " ")[1];
+  //   let parts = answer.split(/\s+/);
+  //   executable = parts[0];
+  //   args = parts.slice(1);
+  // }
 
-  const paths = process.env.PATH.split(":");
-  let filePath = null;
+  // const paths = process.env.PATH.split(":");
+  // let filePath = null;
 
-  for (const p of paths) {
-    let pToCheck = path.join(p, executable);
-    // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
-    //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
-    //   filePath = pToCheck;
-    //   break;
-    // }
-    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
-      filePath = pToCheck;
-      break;
-    }
-  }
+  // for (const p of paths) {
+  //   let pToCheck = path.join(p, executable);
+  //   // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
+  //   //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
+  //   //   filePath = pToCheck;
+  //   //   break;
+  //   // }
+  //   if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+  //     filePath = pToCheck;
+  //     break;
+  //   }
+  // }
 
-  for (const p of paths) {
-    let destPath = path.join(p, executable);
-    if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
-      execFileSync(destPath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
-      return { isFile: true, fileResult: null };
-    }
-  }
+  // for (const p of paths) {
+  //   let destPath = path.join(p, executable);
+  //   if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
+  //     execFileSync(destPath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
+  //     return { isFile: true, fileResult: null };
+  //   }
+  // }
 
-  return { isFile: false, fileResult: null };
+  // return { isFile: false, fileResult: null };
 
   // if (!filePath && fs.existsSync(executable) && fs.statSync(executable).isFile()) {
   //   filePath = executable;
@@ -184,6 +184,43 @@ function handleFile(answer) {
   // } catch (error) {
   //   return { isFile: false, fileResult: null };
   // }
+
+  let match = answer.match(/^(['"])(.*?)\1\s*(.*)/); // Capture quoted executable and arguments
+
+  let executable;
+  let args = [];
+
+  if (match) {
+    executable = match[2]; // Extract quoted executable
+    args = match[3] ? match[3].split(/\s+/) : []; // Remaining arguments
+  } else {
+    let parts = answer.split(/\s+/);
+    executable = parts[0];
+    args = parts.slice(1);
+  }
+
+  // Search for executable in PATH
+  const paths = process.env.PATH.split(":");
+  let filePath = null;
+
+  for (const p of paths) {
+    let pToCheck = path.join(p, executable);
+    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+      filePath = pToCheck;
+      break;
+    }
+  }
+
+  if (filePath) {
+    try {
+      execFileSync(filePath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
+      return { isFile: true, fileResult: null };
+    } catch (error) {
+      return { isFile: false, fileResult: `Error executing ${executable}` };
+    }
+  }
+
+  return { isFile: false, fileResult: null };
 }
 
 function handleCat(args) {
