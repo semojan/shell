@@ -245,12 +245,11 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
-  // Match arguments while preserving quoted filenames
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) return "cat: missing file operand";
 
   parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1") // Remove outer quotes & unescape quotes
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1")
   );
 
   let output = "";
@@ -266,8 +265,8 @@ function handleCat(args) {
       }
     }
   }
-  console.log(output);
-  return output;
+
+  return output + "\n";
 }
 
 function prompt() {
