@@ -266,7 +266,8 @@ function handleCat(args) {
     }
   }
 
-  return output;
+  console.log(output);
+  return null;
 }
 
 function prompt() {
