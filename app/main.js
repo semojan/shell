@@ -266,7 +266,7 @@ function handleCat(args) {
     }
   }
 
-  return output + "\n";
+  return output.trim();
 }
 
 function prompt() {
