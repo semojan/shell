@@ -223,23 +223,23 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-function handleCat(args) {
-  if (args.length === 0) {
-    return "cat: missing file operand";
-  }
-  for (const filePath of args) {
-    try {
-      const data = fs.readFileSync(filePath, "utf-8");
-      return data;
-    } catch (err) {
-      if (err.code === "ENOENT") {
-        return `cat: ${filePath}: No such file or directory`;
-      } else {
-        return `cat: ${filePath}: Permission denied`;
-      }
-    }
-  }
-}
+// function handleCat(args) {
+//   if (args.length === 0) {
+//     return "cat: missing file operand";
+//   }
+//   for (const filePath of args) {
+//     try {
+//       const data = fs.readFileSync(filePath, "utf-8");
+//       return data;
+//     } catch (err) {
+//       if (err.code === "ENOENT") {
+//         return `cat: ${filePath}: No such file or directory`;
+//       } else {
+//         return `cat: ${filePath}: Permission denied`;
+//       }
+//     }
+//   }
+// }
 
 function prompt() {
   rl.question("$ ", (answer) => {
@@ -247,9 +247,9 @@ function prompt() {
     let result = null;
     if (answer === "exit 0") {
       handleExit();
-    } else if (answer.startsWith("cat ")) {
+      // } else if (answer.startsWith("cat ")) {
 
-      result = handleCat(answer.split("cat ")[1]);
+      //   result = handleCat(answer.split("cat ")[1]);
 
     } else if (answer.startsWith("cd ")) {
 
