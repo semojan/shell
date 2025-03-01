@@ -240,6 +240,30 @@ function handleFile(answer) {
 //     }
 //   }
 // }
+function handleCat(args) {
+  if (!args.trim()) {
+    return "cat: missing file operand";
+  }
+
+  // Parse arguments while respecting quotes
+  let parsedArgs = args.match(/(["'])(.*?)\1|(\S+)/g).map(arg => arg.replace(/^["']|["']$/g, ''));
+
+  let output = "";
+  for (const filePath of parsedArgs) {
+    try {
+      const data = fs.readFileSync(filePath, "utf-8");
+      output += data;
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        return `cat: ${filePath}: No such file or directory`;
+      } else {
+        return `cat: ${filePath}: Permission denied`;
+      }
+    }
+  }
+  return output;
+}
+
 
 function prompt() {
   rl.question("$ ", (answer) => {
@@ -247,9 +271,9 @@ function prompt() {
     let result = null;
     if (answer === "exit 0") {
       handleExit();
-      // } else if (answer.startsWith("cat ")) {
+    } else if (answer.startsWith("cat ")) {
 
-      //   result = handleCat(answer.split("cat ")[1]);
+      result = handleCat(answer.split("cat ")[1]);
 
     } else if (answer.startsWith("cd ")) {
 
