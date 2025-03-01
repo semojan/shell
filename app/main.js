@@ -266,7 +266,7 @@ function handleCat(args) {
       }
     }
   }
-
+  console.log(output);
   return output;
 }
 
