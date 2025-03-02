@@ -241,61 +241,28 @@ function handleFile(answer) {
 //   }
 // }
 
-function parseArguments(args) {
-  let parsedArgs = [];
-  let current = "";
-  let inSingleQuote = false;
-  let inDoubleQuote = false;
-  let escaped = false;
-
-  for (let i = 0; i < args.length; i++) {
-    let char = args[i];
-
-    if (escaped) {
-      current += char;
-      escaped = false;
-    } else if (char === "\\" && !inSingleQuote) {
-      escaped = true; // Allow escaping
-    } else if (char === "'" && !inDoubleQuote) {
-      inSingleQuote = !inSingleQuote;
-    } else if (char === '"' && !inSingleQuote) {
-      inDoubleQuote = !inDoubleQuote;
-    } else if (char === " " && !inSingleQuote && !inDoubleQuote) {
-      if (current.length > 0) {
-        parsedArgs.push(current);
-        current = "";
-      }
-    } else {
-      current += char;
-    }
-  }
-
-  if (current.length > 0) {
-    parsedArgs.push(current);
-  }
-
-  return parsedArgs;
-}
-
 function handleCat(args) {
   if (!args.trim()) {
     return "cat: missing file operand";
   }
 
-  let parsedArgs = parseArguments(args);
+  // Parse arguments while handling spaces and escape sequences
+  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
+  if (!parsedArgs) {
+    return "cat: missing file operand";
+  }
+
+  parsedArgs = parsedArgs.map(arg =>
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+  );
 
   try {
-    let output = execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
-    return output;
+    // Execute the real `cat` command with the parsed arguments
+    return execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
   } catch (err) {
-    if (err.code === "ENOENT") {
-      return `cat: No such file or directory`;
-    }
     return `cat: error reading file(s)`;
   }
 }
-
-
 
 function prompt() {
   rl.question("$ ", (answer) => {
