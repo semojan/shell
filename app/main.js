@@ -254,8 +254,8 @@ function parseArguments(args) {
     if (escaped) {
       current += char;
       escaped = false;
-    } else if (char === "\\" && inDoubleQuote) {
-      escaped = true; // Allow escaping inside double quotes
+    } else if (char === "\\" && !inSingleQuote) {
+      escaped = true; // Allow escaping
     } else if (char === "'" && !inDoubleQuote) {
       inSingleQuote = !inSingleQuote;
     } else if (char === '"' && !inSingleQuote) {
@@ -285,11 +285,16 @@ function handleCat(args) {
   let parsedArgs = parseArguments(args);
 
   try {
-    return execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
+    let output = execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
+    return output;
   } catch (err) {
+    if (err.code === "ENOENT") {
+      return `cat: No such file or directory`;
+    }
     return `cat: error reading file(s)`;
   }
 }
+
 
 
 function prompt() {
