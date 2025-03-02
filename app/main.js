@@ -241,37 +241,29 @@ function handleFile(answer) {
 //   }
 // }
 function handleCat(args) {
-  console.log("DEBUG: Raw cat args:", args);
-
   if (!args.trim()) {
     return "cat: missing file operand";
   }
 
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-  console.log("DEBUG: Parsed arguments:", parsedArgs);
-
   if (!parsedArgs) {
     return "cat: missing file operand";
   }
 
   parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1")
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
   );
-  console.log("DEBUG: Cleaned arguments:", parsedArgs);
 
   let output = "";
   for (const filePath of parsedArgs) {
     try {
-      console.log("DEBUG: Trying to read:", filePath);
       const data = fs.readFileSync(filePath, "utf-8");
       output += data;
     } catch (err) {
-      console.log(`cat: ${filePath}: Error - ${err.message}`);
       return `cat: ${filePath}: No such file or directory`;
     }
   }
 
-  console.log(output);
   return output || " ";  // Ensure non-empty return value
 }
 
