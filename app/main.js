@@ -240,9 +240,6 @@ function handleFile(answer) {
 //     }
 //   }
 // }
-
-const { execFileSync } = require("child_process");
-
 function handleCat(args) {
   if (!args.trim()) {
     return "cat: missing file operand";
