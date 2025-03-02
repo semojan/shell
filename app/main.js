@@ -240,19 +240,49 @@ function handleFile(answer) {
 //     }
 //   }
 // }
+
+function parseArguments(args) {
+  let parsedArgs = [];
+  let current = "";
+  let inSingleQuote = false;
+  let inDoubleQuote = false;
+  let escaped = false;
+
+  for (let i = 0; i < args.length; i++) {
+    let char = args[i];
+
+    if (escaped) {
+      current += char;
+      escaped = false;
+    } else if (char === "\\" && inDoubleQuote) {
+      escaped = true; // Allow escaping inside double quotes
+    } else if (char === "'" && !inDoubleQuote) {
+      inSingleQuote = !inSingleQuote;
+    } else if (char === '"' && !inSingleQuote) {
+      inDoubleQuote = !inDoubleQuote;
+    } else if (char === " " && !inSingleQuote && !inDoubleQuote) {
+      if (current.length > 0) {
+        parsedArgs.push(current);
+        current = "";
+      }
+    } else {
+      current += char;
+    }
+  }
+
+  if (current.length > 0) {
+    parsedArgs.push(current);
+  }
+
+  return parsedArgs;
+}
+
 function handleCat(args) {
   if (!args.trim()) {
     return "cat: missing file operand";
   }
 
-  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-  if (!parsedArgs) {
-    return "cat: missing file operand";
-  }
-
-  parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ")
-  );
+  let parsedArgs = parseArguments(args);
 
   try {
     return execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
@@ -260,7 +290,6 @@ function handleCat(args) {
     return `cat: error reading file(s)`;
   }
 }
-
 
 
 function prompt() {
