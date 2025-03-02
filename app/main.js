@@ -258,14 +258,13 @@ function handleCat(args) {
   for (const filePath of parsedArgs) {
     try {
       const data = fs.readFileSync(filePath, "utf-8");
-      console.log(data)
       output += data;
     } catch (err) {
       return `cat: ${filePath}: No such file or directory`;
     }
   }
 
-  return output || " ";  // Ensure non-empty return value
+  return output;
 }
 
 function prompt() {
