@@ -245,18 +245,16 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
-  // Parse arguments while handling spaces and escape sequences
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
     return "cat: missing file operand";
   }
 
   parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ")
   );
 
   try {
-    // Execute the real `cat` command with the parsed arguments
     return execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
   } catch (err) {
     return `cat: error reading file(s)`;
