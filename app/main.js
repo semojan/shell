@@ -240,13 +240,11 @@ function handleFile(answer) {
 //     }
 //   }
 // }
-
 function handleCat(args) {
   if (!args.trim()) {
     return "cat: missing file operand";
   }
 
-  // Parse arguments while handling spaces and escape sequences
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
     return "cat: missing file operand";
@@ -256,12 +254,17 @@ function handleCat(args) {
     arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
   );
 
-  try {
-    // Execute the real `cat` command with the parsed arguments
-    return execFileSync("cat", parsedArgs, { encoding: "utf-8" }).trim();
-  } catch (err) {
-    return `cat: error reading file(s)`;
+  let output = "";
+  for (const filePath of parsedArgs) {
+    try {
+      const data = fs.readFileSync(filePath, "utf-8");
+      output += data;
+    } catch (err) {
+      return `cat: ${filePath}: No such file or directory`;
+    }
   }
+
+  return output || " ";  // Ensure non-empty return value
 }
 
 function prompt() {
