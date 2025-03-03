@@ -223,6 +223,7 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
+
 // function handleCat(args) {
 //   if (args.length === 0) {
 //     return "cat: missing file operand";
