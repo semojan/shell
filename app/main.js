@@ -243,16 +243,12 @@ function handleFile(answer) {
 // }
 function handleCat(args) {
   if (!args.trim()) {
-    console.log("cat: missing file operand");
-    prompt();
-    return;
+    return "cat: missing file operand";
   }
 
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
-    console.log("cat: missing file operand");
-    prompt();
-    return;
+    return "cat: missing file operand";
   }
 
   parsedArgs = parsedArgs.map(parseQuotedString);
@@ -267,9 +263,9 @@ function handleCat(args) {
     }
   }
 
-  process.stdout.write(output);
-  return null;
+  return output;
 }
+
 
 function prompt() {
   rl.question("$ ", (answer) => {
