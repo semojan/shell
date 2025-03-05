@@ -229,17 +229,14 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
-  // Match quoted or unquoted arguments correctly
+  // Extract file paths using parseQuotedString
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
     return "cat: missing file operand";
   }
 
-  parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "") // Remove surrounding quotes
-      .replace(/\\(["'])/g, "$1")   // Handle escaped quotes
-      .replace(/\\\\/g, "\\")       // Ensure backslashes are correctly interpreted
-  );
+  // Use parseQuotedString to properly handle escaping and quoting
+  parsedArgs = parsedArgs.map(arg => parseQuotedString(arg));
 
   try {
     const output = parsedArgs.map(filePath => fs.readFileSync(filePath, "utf-8")).join("");
@@ -248,6 +245,7 @@ function handleCat(args) {
     return `cat: ${parsedArgs.join(" ")}: No such file or directory`;
   }
 }
+
 
 // function handleCat(args) {
 //   if (!args.trim()) {
