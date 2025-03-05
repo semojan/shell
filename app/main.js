@@ -225,41 +225,27 @@ function handleFile(answer) {
 
 
 function handleCat(args) {
-
-  args = parseQuotedString(args);
-
-  const paths = process.env.PATH.split(":");
-  let filePath = null;
-
-  for (const p of paths) {
-    // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
-    //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
-    //   filePath = pToCheck;
-    //   break;
-    // }
-    if (fs.existsSync(p)) {
-      filePath = p;
-      break;
-    }
+  if (!args.trim()) {
+    return "cat: missing file operand";
   }
 
-
-  if (!filePath) {
-    return null;
+  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
+  if (!parsedArgs) {
+    return "cat: missing file operand";
   }
 
-  const cmd = "cat " + args;
-  console.log(cmd)
+  parsedArgs = parsedArgs.map(arg =>
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+  );
 
   try {
-    const data = execSync(cmd);
-    return data;
-  } catch (e) {
-    console.log(e)
-    console.log("error running")
-    return null;
+    const output = execFileSync("cat", parsedArgs, { encoding: "utf-8" });
+    return output.trim();
+  } catch (error) {
+    return `cat: ${parsedArgs.join(" ")}: No such file or directory`;
   }
 }
+
 
 // function handleCat(args) {
 //   if (!args.trim()) {
