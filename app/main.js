@@ -226,7 +226,7 @@ function handleFile(answer) {
 
 function handleCat(args) {
 
-  args = args.map(arg => parseQuotedString(arg));
+  args = parseQuotedString(args);
 
   const paths = process.env.PATH.split(":");
   let filePath = null;
@@ -248,7 +248,7 @@ function handleCat(args) {
     return { isFile: false, fileResult: null };
   }
 
-  const cmd = "cat" + agrgs.join(" ");
+  const cmd = "cat " + args;
 
   try {
     const data = execSync(cmd);
