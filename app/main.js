@@ -249,12 +249,14 @@ function handleCat(args) {
   }
 
   const cmd = "cat " + args;
+  console.log(cmd)
 
   try {
     const data = execSync(cmd);
     return { isFile: true, fileResult: data };
   } catch (e) {
     console.log(e)
+    console.log("error running")
     return { isFile: false, fileResult: null };
   }
 }
