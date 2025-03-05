@@ -241,7 +241,7 @@ function handleFile(answer) {
 //     }
 //   }
 // }
-function handleCat(args) {
+function handleCat(answer) {
   const fileName = answer.split(" ")[0];
   const args = answer.split(fileName + " ")[1];
   const paths = process.env.PATH.split(":");
@@ -273,7 +273,13 @@ function prompt() {
       handleExit();
     } else if (answer.startsWith("cat ")) {
 
-      result = handleCat(answer.split("cat ")[1]);
+      // result = handleCat(answer.split("cat ")[1]);
+      let { isFile, fileResult } = handleCat(answer);
+      if (!isFile) {
+        result = `${answer}: command not found`;
+      } else {
+        result = fileResult;
+      }
 
     } else if (answer.startsWith("cd ")) {
 
