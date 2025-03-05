@@ -263,7 +263,8 @@ function handleCat(args) {
     }
   }
 
-  return output;
+  console.log(output);
+  prompt();
 }
 
 function prompt() {
@@ -274,7 +275,8 @@ function prompt() {
       handleExit();
     } else if (answer.startsWith("cat ")) {
 
-      result = handleCat(answer.split("cat ")[1]);
+      handleCat(answer.split("cat ")[1]);
+      return;
 
     } else if (answer.startsWith("cd ")) {
 
