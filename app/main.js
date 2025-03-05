@@ -269,6 +269,7 @@ function handleCat(args) {
   return;
 }
 
+
 function prompt() {
   rl.question("$ ", (answer) => {
 
