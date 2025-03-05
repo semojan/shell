@@ -263,9 +263,9 @@ function handleCat(args) {
     }
   }
 
-  process.stdout.write(output + "\n"); // Use process.stdout.write to ensure proper flushing
+  console.log(output);
+  process.nextTick(prompt);
 
-  setTimeout(prompt, 0);
 }
 
 function prompt() {
