@@ -246,13 +246,12 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
-  // Extract file paths using regex and parseQuotedString
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
     return "cat: missing file operand";
   }
 
-  parsedArgs = parsedArgs.map(parseQuotedString); // Use parseQuotedString
+  parsedArgs = parsedArgs.map(parseQuotedString);
 
   let output = "";
   for (const filePath of parsedArgs) {
@@ -260,12 +259,13 @@ function handleCat(args) {
       const data = fs.readFileSync(filePath, "utf-8");
       output += data;
     } catch (err) {
-      return `cat: ${filePath}: No such file or directory`;
+      output += `cat: ${filePath}: No such file or directory\n`;
     }
   }
 
   return output;
 }
+
 
 function prompt() {
   rl.question("$ ", (answer) => {
@@ -305,7 +305,9 @@ function prompt() {
       }
     }
 
-    result && console.log(result);
+    if (result) {
+      console.log(result);
+    }
 
     prompt();
   });
