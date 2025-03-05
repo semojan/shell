@@ -225,31 +225,6 @@ function handleFile(answer) {
 
 
 function handleCat(args) {
-  let quotedCmd = [];
-  let executable = "";
-  let args = [];
-  let quoted = false;
-
-  if (answer.startsWith("'")) {
-    quotedCmd = answer.split("'");
-    quotedName = seperateQuotedFileName(quotedCmd, "'")
-    quoted = true;
-  } else if (answer.startsWith('"')) {
-    quotedCmd = answer.split('"');
-    quotedName = seperateQuotedFileName(quotedCmd, '"');
-    quoted = true;
-  }
-
-  if (quoted) {
-    executable = parseQuotedString(quotedName);
-    args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
-  } else {
-    // executable = answer.split(" ")[0];
-    // args = answer.split(executable + " ")[1];
-    let parts = answer.split(/\s+/);
-    executable = parts[0];
-    args = parts.slice(1);
-  }
 
   args = args.map(arg => parseQuotedString(arg));
 
@@ -257,40 +232,29 @@ function handleCat(args) {
   let filePath = null;
 
   for (const p of paths) {
-    let pToCheck = path.join(p, executable);
     // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
     //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
     //   filePath = pToCheck;
     //   break;
     // }
-    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
-      filePath = pToCheck;
+    if (fs.existsSync(p) && fs.statSync(p).isFile()) {
+      filePath = p;
       break;
     }
   }
 
-  for (const p of paths) {
-    let destPath = path.join(p, executable);
-    if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
-      execFileSync(destPath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
-      return { isFile: true, fileResult: null };
-    }
-  }
-
-  return { isFile: false, fileResult: null };
-
-  if (!filePath && fs.existsSync(executable) && fs.statSync(executable).isFile()) {
-    filePath = executable;
-  }
 
   if (!filePath) {
     return { isFile: false, fileResult: null };
   }
 
+  const cmd = "cat" + agrgs.join(" ");
+
   try {
-    const output = execFileSync(filePath, args, { encoding: "utf-8", stdio: 'inherit', shell: true }).trim();
-    return { isFile: true, fileResult: output };
-  } catch (error) {
+    const data = execSync(cmd);
+    return { isFile: true, fileResult: data };
+  } catch (e) {
+    console.log(e)
     return { isFile: false, fileResult: null };
   }
 }
