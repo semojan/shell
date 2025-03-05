@@ -242,28 +242,27 @@ function handleFile(answer) {
 //   }
 // }
 function handleCat(args) {
-  if (!args.trim()) {
-    return "cat: missing file operand";
-  }
+  const fileName = answer.split(" ")[0];
+  const args = answer.split(fileName + " ")[1];
+  const paths = process.env.PATH.split(":");
 
-  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-  if (!parsedArgs) {
-    return "cat: missing file operand";
-  }
-
-  parsedArgs = parsedArgs.map(parseQuotedString);
-
-  let output = "";
-  for (const filePath of parsedArgs) {
-    try {
-      const data = fs.readFileSync(filePath, "utf-8");
-      output += data;
-    } catch (err) {
-      return `cat: ${filePath}: No such file or directory`;
+  let filePath;
+  for (const p of paths) {
+    // pToCheck = path.join(p, fileName);
+    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+      filePath = p;
+      break;
+    } else {
+      filePath = null;
     }
   }
 
-  return output;
+  if (filePath) {
+    output = execSync(answer).toString().trim();
+    return { isFile: true, fileResult: output };
+  }
+  return { isFile: false, fileResult: null };
 }
 
 function prompt() {
