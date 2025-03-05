@@ -243,25 +243,30 @@ function handleFile(answer) {
 // }
 function handleCat(args) {
   if (!args.trim()) {
-    return "cat: missing file operand";
+    console.log("cat: missing file operand");
+    prompt();
+    return;
   }
 
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
-    return "cat: missing file operand";
+    console.log("cat: missing file operand");
+    prompt();
+    return;
   }
 
-  parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
-  );
+  parsedArgs = parsedArgs.map(parseQuotedString);
 
   let output = "";
   for (const filePath of parsedArgs) {
-    const data = fs.readFileSync(filePath, "utf-8");
-    output += data;
+    try {
+      const data = fs.readFileSync(filePath, "utf-8");
+      output += data;
+    } catch (err) {
+      output += `cat: ${filePath}: No such file or directory\n`;
+    }
   }
 
-  // return output;
   process.stdout.write(output);
   return null;
 }
