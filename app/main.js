@@ -251,7 +251,9 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
-  parsedArgs = parsedArgs.map(parseQuotedString);
+  parsedArgs = parsedArgs.map(arg =>
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+  );
 
   let output = "";
   for (const filePath of parsedArgs) {
@@ -259,13 +261,11 @@ function handleCat(args) {
       const data = fs.readFileSync(filePath, "utf-8");
       output += data;
     } catch (err) {
-      output += `cat: ${filePath}: No such file or directory\n`;
+      return `cat: ${filePath}: No such file or directory`;
     }
   }
 
-  console.log(output);
-  process.nextTick(prompt);
-
+  return output;
 }
 
 function prompt() {
@@ -276,8 +276,7 @@ function prompt() {
       handleExit();
     } else if (answer.startsWith("cat ")) {
 
-      handleCat(answer.split("cat ")[1]);
-      return;
+      result = handleCat(answer.split("cat ")[1]);
 
     } else if (answer.startsWith("cd ")) {
 
@@ -307,9 +306,7 @@ function prompt() {
       }
     }
 
-    if (result) {
-      console.log(result);
-    }
+    result && console.log(result);
 
     prompt();
   });
