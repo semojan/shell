@@ -229,23 +229,25 @@ function handleCat(args) {
     return "cat: missing file operand";
   }
 
+  // Match quoted or unquoted arguments correctly
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
     return "cat: missing file operand";
   }
 
   parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+    arg.replace(/^["']|["']$/g, "") // Remove surrounding quotes
+      .replace(/\\(["'])/g, "$1")   // Handle escaped quotes
+      .replace(/\\\\/g, "\\")       // Ensure backslashes are correctly interpreted
   );
 
   try {
-    const output = execFileSync("cat", parsedArgs, { encoding: "utf-8" });
+    const output = parsedArgs.map(filePath => fs.readFileSync(filePath, "utf-8")).join("");
     return output.trim();
-  } catch (error) {
+  } catch (err) {
     return `cat: ${parsedArgs.join(" ")}: No such file or directory`;
   }
 }
-
 
 // function handleCat(args) {
 //   if (!args.trim()) {
