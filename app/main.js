@@ -224,49 +224,103 @@ function handleFile(answer) {
 }
 
 
-// function handleCat(args) {
-//   if (args.length === 0) {
-//     return "cat: missing file operand";
-//   }
-//   for (const filePath of args) {
-//     try {
-//       const data = fs.readFileSync(filePath, "utf-8");
-//       return data;
-//     } catch (err) {
-//       if (err.code === "ENOENT") {
-//         return `cat: ${filePath}: No such file or directory`;
-//       } else {
-//         return `cat: ${filePath}: Permission denied`;
-//       }
-//     }
-//   }
-// }
 function handleCat(args) {
-  if (!args.trim()) {
-    return "cat: missing file operand";
+  let quotedCmd = [];
+  let executable = "";
+  let args = [];
+  let quoted = false;
+
+  if (answer.startsWith("'")) {
+    quotedCmd = answer.split("'");
+    quotedName = seperateQuotedFileName(quotedCmd, "'")
+    quoted = true;
+  } else if (answer.startsWith('"')) {
+    quotedCmd = answer.split('"');
+    quotedName = seperateQuotedFileName(quotedCmd, '"');
+    quoted = true;
   }
 
-  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-  if (!parsedArgs) {
-    return "cat: missing file operand";
+  if (quoted) {
+    executable = parseQuotedString(quotedName);
+    args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
+  } else {
+    // executable = answer.split(" ")[0];
+    // args = answer.split(executable + " ")[1];
+    let parts = answer.split(/\s+/);
+    executable = parts[0];
+    args = parts.slice(1);
   }
 
-  parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
-  );
+  args = args.map(arg => parseQuotedString(arg));
 
-  let output = "";
-  for (const filePath of parsedArgs) {
-    try {
-      const data = fs.readFileSync(filePath, "utf-8");
-      output += data;
-    } catch (err) {
-      return `cat: ${filePath}: No such file or directory`;
+  const paths = process.env.PATH.split(":");
+  let filePath = null;
+
+  for (const p of paths) {
+    let pToCheck = path.join(p, executable);
+    // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
+    //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
+    //   filePath = pToCheck;
+    //   break;
+    // }
+    if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
+      filePath = pToCheck;
+      break;
     }
   }
 
-  return output;
+  for (const p of paths) {
+    let destPath = path.join(p, executable);
+    if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
+      execFileSync(destPath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
+      return { isFile: true, fileResult: null };
+    }
+  }
+
+  return { isFile: false, fileResult: null };
+
+  if (!filePath && fs.existsSync(executable) && fs.statSync(executable).isFile()) {
+    filePath = executable;
+  }
+
+  if (!filePath) {
+    return { isFile: false, fileResult: null };
+  }
+
+  try {
+    const output = execFileSync(filePath, args, { encoding: "utf-8", stdio: 'inherit', shell: true }).trim();
+    return { isFile: true, fileResult: output };
+  } catch (error) {
+    return { isFile: false, fileResult: null };
+  }
 }
+
+// function handleCat(args) {
+//   if (!args.trim()) {
+//     return "cat: missing file operand";
+//   }
+
+//   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
+//   if (!parsedArgs) {
+//     return "cat: missing file operand";
+//   }
+
+//   parsedArgs = parsedArgs.map(arg =>
+//     arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+//   );
+
+//   let output = "";
+//   for (const filePath of parsedArgs) {
+//     try {
+//       const data = fs.readFileSync(filePath, "utf-8");
+//       output += data;
+//     } catch (err) {
+//       return `cat: ${filePath}: No such file or directory`;
+//     }
+//   }
+
+//   return output;
+// }
 
 function prompt() {
   rl.question("$ ", (answer) => {
