@@ -224,55 +224,48 @@ function handleFile(answer) {
 }
 
 
+// function handleCat(args) {
+//   if (args.length === 0) {
+//     return "cat: missing file operand";
+//   }
+//   for (const filePath of args) {
+//     try {
+//       const data = fs.readFileSync(filePath, "utf-8");
+//       return data;
+//     } catch (err) {
+//       if (err.code === "ENOENT") {
+//         return `cat: ${filePath}: No such file or directory`;
+//       } else {
+//         return `cat: ${filePath}: Permission denied`;
+//       }
+//     }
+//   }
+// }
 function handleCat(args) {
   if (!args.trim()) {
     return "cat: missing file operand";
   }
 
-  // Extract file paths using parseQuotedString
+  // Extract file paths using regex and parseQuotedString
   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
   if (!parsedArgs) {
     return "cat: missing file operand";
   }
 
-  // Use parseQuotedString to properly handle escaping and quoting
-  parsedArgs = parsedArgs.map(arg => parseQuotedString(arg));
+  parsedArgs = parsedArgs.map(parseQuotedString); // Use parseQuotedString
 
-  try {
-    const output = parsedArgs.map(filePath => fs.readFileSync(filePath, "utf-8")).join("");
-    return output.trim();
-  } catch (err) {
-    return `cat: ${parsedArgs.join(" ")}: No such file or directory`;
+  let output = "";
+  for (const filePath of parsedArgs) {
+    try {
+      const data = fs.readFileSync(filePath, "utf-8");
+      output += data;
+    } catch (err) {
+      return `cat: ${filePath}: No such file or directory`;
+    }
   }
+
+  return output;
 }
-
-
-// function handleCat(args) {
-//   if (!args.trim()) {
-//     return "cat: missing file operand";
-//   }
-
-//   let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-//   if (!parsedArgs) {
-//     return "cat: missing file operand";
-//   }
-
-//   parsedArgs = parsedArgs.map(arg =>
-//     arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
-//   );
-
-//   let output = "";
-//   for (const filePath of parsedArgs) {
-//     try {
-//       const data = fs.readFileSync(filePath, "utf-8");
-//       output += data;
-//     } catch (err) {
-//       return `cat: ${filePath}: No such file or directory`;
-//     }
-//   }
-
-//   return output;
-// }
 
 function prompt() {
   rl.question("$ ", (answer) => {
