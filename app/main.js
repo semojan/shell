@@ -242,11 +242,30 @@ function handleFile(answer) {
 //   }
 // }
 function handleCat(args) {
-  let output = "";
-  for (let i = 1; i < args.length; i++) {
-    if (fs.existsSync(args[i])) output += fs.readFileSync(args[i], 'utf-8');
+  if (!args.trim()) {
+    return "cat: missing file operand";
   }
-  output === "" ? output : console.log(output);
+
+  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
+  if (!parsedArgs) {
+    return "cat: missing file operand";
+  }
+
+  parsedArgs = parsedArgs.map(arg =>
+    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
+  );
+
+  let output = "";
+  for (const filePath of parsedArgs) {
+    try {
+      const data = fs.readFileSync(filePath, "utf-8");
+      output += data;
+    } catch (err) {
+      return `cat: ${filePath}: No such file or directory`;
+    }
+  }
+
+  return output;
 }
 
 function prompt() {
