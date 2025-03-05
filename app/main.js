@@ -237,7 +237,7 @@ function handleCat(args) {
     //   filePath = pToCheck;
     //   break;
     // }
-    if (fs.existsSync(p) && fs.statSync(p).isFile()) {
+    if (fs.existsSync(p)) {
       filePath = p;
       break;
     }
@@ -245,7 +245,7 @@ function handleCat(args) {
 
 
   if (!filePath) {
-    return { isFile: false, fileResult: null };
+    return null;
   }
 
   const cmd = "cat " + args;
@@ -253,11 +253,11 @@ function handleCat(args) {
 
   try {
     const data = execSync(cmd);
-    return { isFile: true, fileResult: data };
+    return data;
   } catch (e) {
     console.log(e)
     console.log("error running")
-    return { isFile: false, fileResult: null };
+    return null;
   }
 }
 
