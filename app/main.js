@@ -242,33 +242,12 @@ function handleFile(answer) {
 //   }
 // }
 function handleCat(args) {
-  if (!args.trim()) {
-    return "cat: missing file operand";
-  }
-
-  let parsedArgs = args.match(/(?:[^\s"']+|"(?:\\.|[^"])*"|'(?:\\.|[^'])*')+/g);
-  if (!parsedArgs) {
-    return "cat: missing file operand";
-  }
-
-  parsedArgs = parsedArgs.map(arg =>
-    arg.replace(/^["']|["']$/g, "").replace(/\\(["'])/g, "$1").replace(/\\ /g, " ") // Handle escaped spaces
-  );
-
   let output = "";
-  for (const filePath of parsedArgs) {
-    try {
-      const data = fs.readFileSync(filePath, "utf-8");
-      output += data;
-    } catch (err) {
-      return `cat: ${filePath}: No such file or directory`;
-    }
+  for (let i = 1; i < args.length; i++) {
+    if (fs.existsSync(args[i])) output += fs.readFileSync(args[i], 'utf-8');
   }
-
-  process.stdout.write(output);
-  return;
+  output === "" ? output : console.log(output);
 }
-
 
 function prompt() {
   rl.question("$ ", (answer) => {
