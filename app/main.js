@@ -179,7 +179,8 @@ function handleExternal(answer, redirect) {
     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output, isError: false };
   } catch (error) {
-    return { isFile: false, fileResult: null, isError: true };
+    const errorOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
+    return { isFile: false, fileResult: errorOutput, isError: true };
   }
 }
 
@@ -214,13 +215,8 @@ function prompt() {
     } else if (answer.startsWith("cat ")) {
 
       let { isFile, fileResult, isError: errFlag } = handleExternal("cat " + args.join(" "));
-      if (!isFile) {
-        result = `${answer}: command not found`;
-      } else {
-        result = fileResult;
-        isError = errFlag;
-      }
-
+      result = fileResult;
+      isError = errFlag;
       if (redirect) {
         console.log(result)
       }
@@ -238,12 +234,8 @@ function prompt() {
     } else if (answer.startsWith("ls ")) {
 
       let { isFile, fileResult, isError: errFlag } = handleExternal("ls " + args.join(" "));
-      if (!isFile) {
-        result = `${answer}: command not found`;
-      } else {
-        result = fileResult;
-        isError = errFlag;
-      }
+      result = fileResult;
+      isError = errFlag;
 
     } else if (answer === "pwd") {
 
