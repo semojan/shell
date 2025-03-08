@@ -180,6 +180,7 @@ function handleExternal(answer) {
     return { isFile: true, fileResult: output };
   }
 
+  console.log(output)
   return { isFile: false, fileResult: output };
 }
 
