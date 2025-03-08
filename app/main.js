@@ -118,73 +118,6 @@ function seperateQuotedFileName(quotedCmd, quote) {
 }
 
 function handleFile(answer) {
-  // let quotedCmd = [];
-  // let executable = "";
-  // let args = [];
-  // let quoted = false;
-
-  // if (answer.startsWith("'")) {
-  //   quotedCmd = answer.split("'");
-  //   quotedName = seperateQuotedFileName(quotedCmd, "'")
-  //   quoted = true;
-  // } else if (answer.startsWith('"')) {
-  //   quotedCmd = answer.split('"');
-  //   quotedName = seperateQuotedFileName(quotedCmd, '"');
-  //   quoted = true;
-  // }
-
-  // if (quoted) {
-  //   executable = parseQuotedString(quotedName);
-  //   args = quotedCmd.slice(2).filter(arg => arg.trim() !== "");
-  // } else {
-  //   // executable = answer.split(" ")[0];
-  //   // args = answer.split(executable + " ")[1];
-  //   let parts = answer.split(/\s+/);
-  //   executable = parts[0];
-  //   args = parts.slice(1);
-  // }
-
-  // const paths = process.env.PATH.split(":");
-  // let filePath = null;
-
-  // for (const p of paths) {
-  //   let pToCheck = path.join(p, executable);
-  //   // if (fs.existsSync(p) && fs.readdirSync(p).includes(executable)) {
-  //   //   // execFileSync(executable, args, { encoding: 'utf-8', stdio: 'inherit' });
-  //   //   filePath = pToCheck;
-  //   //   break;
-  //   // }
-  //   if (fs.existsSync(pToCheck) && fs.statSync(pToCheck).isFile()) {
-  //     filePath = pToCheck;
-  //     break;
-  //   }
-  // }
-
-  // for (const p of paths) {
-  //   let destPath = path.join(p, executable);
-  //   if (fs.existsSync(destPath) && fs.statSync(destPath).isFile()) {
-  //     execFileSync(destPath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
-  //     return { isFile: true, fileResult: null };
-  //   }
-  // }
-
-  // return { isFile: false, fileResult: null };
-
-  // if (!filePath && fs.existsSync(executable) && fs.statSync(executable).isFile()) {
-  //   filePath = executable;
-  // }
-
-  // if (!filePath) {
-  //   return { isFile: false, fileResult: null };
-  // }
-
-  // try {
-  //   const output = execFileSync(filePath, args, { encoding: "utf-8", stdio: 'inherit', shell: true }).trim();
-  //   return { isFile: true, fileResult: output };
-  // } catch (error) {
-  //   return { isFile: false, fileResult: null };
-  // }
-
   let match = answer.match(/^(['"])(.*?)\1\s*(.*)/); // Capture quoted executable and arguments
 
   let executable;
@@ -223,24 +156,6 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-
-// function handleCat(args) {
-//   if (args.length === 0) {
-//     return "cat: missing file operand";
-//   }
-//   for (const filePath of args) {
-//     try {
-//       const data = fs.readFileSync(filePath, "utf-8");
-//       return data;
-//     } catch (err) {
-//       if (err.code === "ENOENT") {
-//         return `cat: ${filePath}: No such file or directory`;
-//       } else {
-//         return `cat: ${filePath}: Permission denied`;
-//       }
-//     }
-//   }
-// }
 function handleCat(answer) {
   const fileName = answer.split(" ")[0];
   const args = answer.split(fileName + " ")[1];
@@ -265,8 +180,29 @@ function handleCat(answer) {
   return { isFile: false, fileResult: null };
 }
 
+function handleRedirect(result, args) {
+  const index = args.findIndex(arg => arg === ">" || arg === "1>");
+  if (index !== -1 && index + 1 < args.length) {
+    const filePath = args[index + 1];
+    try {
+      fs.writeFileSync(filePath, result, { flag: "w" });
+      console.log(`Output redirected to ${filePath}`);
+    } catch (error) {
+      console.error(`Error writing to file: ${error.message}`);
+    }
+  }
+}
+
 function prompt() {
   rl.question("$ ", (answer) => {
+
+    const args = answer.split(" ").slice(1);
+    const redirect = args.includes(">") || args.includes("1>");
+
+    if (redirect) {
+      const index = args.findIndex(arg => arg === ">" || arg === "1>");
+      args = args.slice(0, index);
+    }
 
     let result = null;
     if (answer === "exit 0") {
@@ -274,7 +210,7 @@ function prompt() {
     } else if (answer.startsWith("cat ")) {
 
       // result = handleCat(answer.split("cat ")[1]);
-      let { isFile, fileResult } = handleCat(answer);
+      let { isFile, fileResult } = handleCat("cat " + args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
@@ -288,8 +224,8 @@ function prompt() {
 
     } else if (answer.startsWith("echo ")) {
 
-      const text = answer.split("echo ")[1];
-      result = handleEcho(text);
+      // const text = answer.split("echo ")[1];
+      result = handleEcho(args.slice(1));
 
     } else if (answer === "pwd") {
 
@@ -297,16 +233,20 @@ function prompt() {
 
     } else if (answer.startsWith("type")) {
 
-      const command = answer.split("type ")[1];
-      result = handleType(command);
+      // const command = answer.split("type ")[1];
+      result = handleType(args.slice(1));
 
     } else {
-      let { isFile, fileResult } = handleFile(answer);
+      let { isFile, fileResult } = handleFile(args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
         result = fileResult;
       }
+    }
+
+    if (redirect) {
+      result = handleRedirect(result, args);
     }
 
     result && console.log(result);
