@@ -214,7 +214,6 @@ function prompt() {
 
       // result = handleCat(answer.split("cat ")[1]);
       let { isFile, fileResult } = handleExternal("cat " + args.join(" "));
-      console.log(fileResult)
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
