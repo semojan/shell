@@ -156,29 +156,42 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-// function handleExternal(answer) {
-//   const fileName = answer.split(" ")[0];
-//   const args = answer.split(fileName + " ")[1];
-//   const paths = process.env.PATH.split(":");
+function handleExternal(answer) {
+  const fileName = answer.split(" ")[0];
+  const args = answer.split(fileName + " ")[1];
+  const paths = process.env.PATH.split(":");
 
-//   let filePath;
-//   for (const p of paths) {
-//     // pToCheck = path.join(p, fileName);
-//     if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-//       // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-//       filePath = p;
-//       break;
-//     } else {
-//       filePath = null;
-//     }
-//   }
+  let filePath;
+  for (const p of paths) {
+    // pToCheck = path.join(p, fileName);
+    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+      filePath = p;
+      break;
+    } else {
+      filePath = null;
+    }
+  }
 
-//   if (filePath) {
-//     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
-//     return { isFile: true, fileResult: output };
-//   }
-//   return { isFile: false, fileResult: null };
-// }
+  if (filePath) {
+    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+    return { isFile: true, fileResult: output };
+  }
+  return { isFile: false, fileResult: null };
+}
+function handleExternal(answer) {
+  try {
+    // Execute command, capture both stdout and stderr
+    let output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] });
+
+    return { isFile: true, fileResult: output.trim() };
+  } catch (error) {
+    // If error occurs, still check stdout to allow redirection
+    let stdout = error.stdout ? error.stdout.toString().trim() : "";
+    return { isFile: true, fileResult: stdout };
+  }
+}
+
 
 function handleRedirect(result, args) {
   const index = args.findIndex(arg => [">", "1>"].includes(arg));
@@ -192,18 +205,6 @@ function handleRedirect(result, args) {
     }
   }
 }
-
-function handleExternal(answer) {
-  try {
-    let output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] });
-
-    return { isFile: true, fileResult: output.trim() };
-  } catch (error) {
-    let stdout = error.stdout ? error.stdout.toString().trim() : "";
-    return { isFile: true, fileResult: stdout };
-  }
-}
-
 
 function prompt() {
   rl.question("$ ", (answer) => {
