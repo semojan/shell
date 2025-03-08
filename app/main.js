@@ -177,6 +177,11 @@ function handleExternal(answer) {
     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output };
   }
+  console.log(output);
+
+  // if (answer.startsWith("cat")){
+  //   output = ""
+  // }
   return { isFile: false, fileResult: null };
 }
 function handleExternal(answer) {
