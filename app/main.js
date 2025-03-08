@@ -181,7 +181,7 @@ function handleExternal(answer) {
 }
 
 function handleRedirect(result, args) {
-  const index = args.findIndex(arg => arg === ">" || arg === "1>");
+  const index = args.findIndex(arg => [">", "1>"].includes(arg));
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
@@ -256,9 +256,9 @@ function prompt() {
 
     if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "));
+    } else if (result !== null) {
+      console.log(result);
     }
-
-    result && console.log(result);
 
     prompt();
   });
