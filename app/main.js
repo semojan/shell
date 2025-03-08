@@ -251,10 +251,12 @@ function prompt() {
       result = handleType(args.join(" "));
 
     } else {
-      let { fileResult, errorMessage: errMsg, isError: errFlag } = handleFile(args.join(" "));
-      result = fileResult;
-      errorMessage = errMsg;
-      isError = errFlag;
+      let { isFile, fileResult } = handleFile(answer);
+      if (!isFile) {
+        result = `${answer}: command not found`;
+      } else {
+        result = fileResult;
+      }
     }
 
     if (redirect && result !== null) {
