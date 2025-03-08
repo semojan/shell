@@ -213,7 +213,6 @@ function prompt() {
       handleExit();
     } else if (answer.startsWith("cat ")) {
 
-      // result = handleCat(answer.split("cat ")[1]);
       let { isFile, fileResult, isError: errFlag } = handleExternal("cat " + args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
