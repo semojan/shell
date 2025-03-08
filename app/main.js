@@ -184,9 +184,6 @@ function handleFile(answer) {
 //   }
 // }
 
-const fs = require("fs");
-const { execSync } = require("child_process");
-
 function handleExternal(answer) {
   try {
     const output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
