@@ -2,7 +2,7 @@ const readline = require("readline");
 const { exit } = require("process");
 const path = require("path");
 const fs = require("fs");
-const { execSync, execFileSync, spawn } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -181,35 +181,13 @@ function handleExternal(answer, redirect) {
   // } catch (error) {
   //   return { isFile: false, fileResult: null };
   // }
-  let args = answer.split(" ");
-  if (redirect) {
-    const command = args.slice(0, idx);
-    const filePath = args[idx + 1];
-    return new Promise((resolve) => {
-      const child = spawn(command[0], command.slice(1), {
-        stdio: ["ignore", fs.openSync(filePath, "w"), "inherit"],
-      });
-      child.on("error", () => {
-        console.log(`${command.slice(2)}: No such file or directory`);
-        resolve(true);
-      });
-      child.on("close", (code) => {
-        resolve(true);
-      });
-    });
+  try {
+    const output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+    return { isFile: true, fileResult: output, isError: false };
+  } catch (error) {
+    const errorOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
+    return { isFile: false, fileResult: errorOutput, isError: true };
   }
-  return new Promise((resolve) => {
-    const child = spawn(args[0], args.slice(1), {
-      stdio: "inherit",
-    });
-    child.on("error", () => {
-      console.log(`${args[0]}: command not found`);
-      resolve(true);
-    });
-    child.on("close", (code) => {
-      resolve(true);
-    });
-  });
 }
 
 function handleRedirect(result, args) {
@@ -223,6 +201,7 @@ function handleRedirect(result, args) {
       return `${filePath}: No such file or directory`
     }
   }
+  return false;
 }
 
 function prompt() {
@@ -242,11 +221,12 @@ function prompt() {
     } else if (answer.startsWith("cat ")) {
 
       // result = handleCat(answer.split("cat ")[1]);
-      let { isFile, fileResult } = handleExternal("cat " + args.join(" "), redirect);
+      let { isFile, fileResult, isError: errFlag } = handleExternal("cat " + args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
         result = fileResult;
+        isError = errFlag;
       }
 
     } else if (answer.startsWith("cd ")) {
@@ -261,13 +241,14 @@ function prompt() {
 
     } else if (answer.startsWith("ls ")) {
 
-      // result = handleCat(answer.split("cat ")[1]);
-      let { isFile, fileResult } = handleExternal("ls " + args.join(" "));
+      let { isFile, fileResult, isError: errFlag } = handleExternal("ls " + args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
         result = fileResult;
+        isError = errFlag;
       }
+
     } else if (answer === "pwd") {
 
       result = handlePwd();
@@ -278,16 +259,19 @@ function prompt() {
       result = handleType(args.join(" "));
 
     } else {
-      let { isFile, fileResult } = handleFile(args.join(" "));
+      let { isFile, fileResult, isError: errFlag } = handleFile(args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
         result = fileResult;
+        isError = errFlag;
       }
     }
 
-    if (redirect && result !== null) {
-      handleRedirect(result, answer.split(" "));
+    if (redirect && result !== null && !isError) {
+      if (!handleRedirect(result, answer.split(" "))) {
+        console.log(result); // Print if redirection fails
+      }
     } else if (result !== null) {
       console.log(result);
     }
