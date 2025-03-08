@@ -174,7 +174,7 @@ function handleExternal(answer) {
   }
 
   if (filePath) {
-    output = execSync(answer).toString().trim();
+    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output };
   }
   return { isFile: false, fileResult: null };
