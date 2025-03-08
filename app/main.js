@@ -173,16 +173,17 @@ function handleExternal(answer) {
     }
   }
 
+  let output = null;
+
   if (filePath) {
     output = execSync(answer).toString().trim();
     return { isFile: true, fileResult: output };
   }
-  console.log(output);
 
   // if (answer.startsWith("cat")){
   //   output = ""
   // }
-  return { isFile: false, fileResult: null };
+  return { isFile: false, fileResult: output };
 }
 function handleExternal(answer) {
   try {
