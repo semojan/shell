@@ -156,42 +156,42 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-function handleExternal(answer) {
-  const fileName = answer.split(" ")[0];
-  const args = answer.split(fileName + " ")[1];
-  const paths = process.env.PATH.split(":");
+// function handleExternal(answer) {
+//   const fileName = answer.split(" ")[0];
+//   const args = answer.split(fileName + " ")[1];
+//   const paths = process.env.PATH.split(":");
 
-  let filePath;
-  for (const p of paths) {
-    // pToCheck = path.join(p, fileName);
-    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-      filePath = p;
-      break;
-    } else {
-      filePath = null;
-    }
-  }
-
-  if (filePath) {
-    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
-    return { isFile: true, fileResult: output };
-  }
-  return { isFile: false, fileResult: null };
-}
-
-// function handleRedirect(result, args) {
-//   const index = args.findIndex(arg => [">", "1>"].includes(arg));
-//   if (index !== -1 && index + 1 < args.length) {
-//     const filePath = args[index + 1];
-//     try {
-//       fs.writeFileSync(filePath, result, { flag: "w" });
-//       return null;
-//     } catch (error) {
-//       return `${filePath}: No such file or directory`
+//   let filePath;
+//   for (const p of paths) {
+//     // pToCheck = path.join(p, fileName);
+//     if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+//       // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+//       filePath = p;
+//       break;
+//     } else {
+//       filePath = null;
 //     }
 //   }
+
+//   if (filePath) {
+//     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+//     return { isFile: true, fileResult: output };
+//   }
+//   return { isFile: false, fileResult: null };
 // }
+
+function handleRedirect(result, args) {
+  const index = args.findIndex(arg => [">", "1>"].includes(arg));
+  if (index !== -1 && index + 1 < args.length) {
+    const filePath = args[index + 1];
+    try {
+      fs.writeFileSync(filePath, result, { flag: "w" });
+      return null;
+    } catch (error) {
+      return `${filePath}: No such file or directory`
+    }
+  }
+}
 
 function handleExternal(answer) {
   try {
