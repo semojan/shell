@@ -269,9 +269,7 @@ function prompt() {
     }
 
     if (redirect && result !== null && !isError) {
-      if (!handleRedirect(result, answer.split(" "))) {
-        console.log(result); // Print if redirection fails
-      }
+      handleRedirect(result, answer.split(" "));
     } else if (result !== null) {
       console.log(result);
     }
