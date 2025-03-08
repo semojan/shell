@@ -156,37 +156,27 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-// function handleExternal(answer, redirect) {
-//   const fileName = answer.split(" ")[0];
-//   const args = answer.split(fileName + " ")[1];
-//   const paths = process.env.PATH.split(":");
+function handleExternal(answer, redirect) {
+  const fileName = answer.split(" ")[0];
+  const args = answer.split(fileName + " ")[1];
+  const paths = process.env.PATH.split(":");
 
-//   let filePath;
-//   for (const p of paths) {
-//     // pToCheck = path.join(p, fileName);
-//     if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-//       // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-//       filePath = p;
-//       break;
-//     } else {
-//       filePath = null;
-//     }
-//   }
+  let filePath;
+  for (const p of paths) {
+    // pToCheck = path.join(p, fileName);
+    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+      filePath = p;
+      break;
+    } else {
+      filePath = null;
+    }
+  }
 
-//   let output = null;
+  let output = null;
 
-//   try {
-//     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
-//     return { isFile: true, fileResult: output, isError: false };
-//   } catch (error) {
-//     const errorOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
-//     return { isFile: false, fileResult: errorOutput, isError: true };
-//   }
-// }
-
-function handleExternal(answer) {
   try {
-    const output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output, isError: false, errorMessage: null };
   } catch (error) {
     const stdoutOutput = error.stdout ? error.stdout.toString().trim() : "";
@@ -195,7 +185,6 @@ function handleExternal(answer) {
     return { isFile: true, fileResult: stdoutOutput, errorMessage: stderrOutput, isError: true };
   }
 }
-
 
 function handleRedirect(result, args) {
   const index = args.findIndex(arg => [">", "1>"].includes(arg));
@@ -211,73 +200,9 @@ function handleRedirect(result, args) {
   return false;
 }
 
-// function prompt() {
-//   rl.question("$ ", (answer) => {
-
-//     let args = answer.split(" ").slice(1);
-//     const redirect = args.includes(">") || args.includes("1>");
-
-//     if (redirect) {
-//       const index = args.findIndex(arg => arg === ">" || arg === "1>");
-//       args = args.slice(0, index);
-//     }
-
-//     let result = null;
-//     if (answer === "exit 0") {
-//       handleExit();
-//     } else if (answer.startsWith("cat ")) {
-
-//       let { isFile, fileResult, isError: errFlag } = handleExternal("cat " + args.join(" "));
-//       result = fileResult;
-//       isError = errFlag;
-
-//     } else if (answer.startsWith("cd ")) {
-
-//       const inPath = answer.split("cd ")[1];
-//       result = handleCd(inPath);
-
-//     } else if (answer.startsWith("echo ")) {
-
-//       // const text = answer.split("echo ")[1];
-//       result = handleEcho(args.join(" "));
-
-//     } else if (answer.startsWith("ls ")) {
-
-//       let { isFile, fileResult, isError: errFlag } = handleExternal("ls " + args.join(" "));
-//       result = fileResult;
-//       isError = errFlag;
-
-//     } else if (answer === "pwd") {
-
-//       result = handlePwd();
-
-//     } else if (answer.startsWith("type")) {
-
-//       // const command = answer.split("type ")[1];
-//       result = handleType(args.join(" "));
-
-//     } else {
-//       let { isFile, fileResult, isError: errFlag } = handleFile(args.join(" "));
-//       if (!isFile) {
-//         result = `${answer}: command not found`;
-//       } else {
-//         result = fileResult;
-//         isError = errFlag;
-//       }
-//     }
-
-//     if (redirect && result !== null && !isError) {
-//       handleRedirect(result, answer.split(" "));
-//     } else if (result !== null) {
-//       console.log(result);
-//     }
-
-//     prompt();
-//   });
-// }
-
 function prompt() {
   rl.question("$ ", (answer) => {
+
     let args = answer.split(" ").slice(1);
     const redirect = args.includes(">") || args.includes("1>");
 
@@ -293,24 +218,38 @@ function prompt() {
     if (answer === "exit 0") {
       handleExit();
     } else if (answer.startsWith("cat ")) {
+
       let { fileResult, errorMessage: errMsg, isError: errFlag } = handleExternal("cat " + args.join(" "));
       result = fileResult;
       errorMessage = errMsg;
       isError = errFlag;
+
     } else if (answer.startsWith("cd ")) {
+
       const inPath = answer.split("cd ")[1];
       result = handleCd(inPath);
+
     } else if (answer.startsWith("echo ")) {
+
+      // const text = answer.split("echo ")[1];
       result = handleEcho(args.join(" "));
+
     } else if (answer.startsWith("ls ")) {
+
       let { fileResult, errorMessage: errMsg, isError: errFlag } = handleExternal("ls " + args.join(" "));
       result = fileResult;
       errorMessage = errMsg;
       isError = errFlag;
+
     } else if (answer === "pwd") {
+
       result = handlePwd();
+
     } else if (answer.startsWith("type")) {
+
+      // const command = answer.split("type ")[1];
       result = handleType(args.join(" "));
+
     } else {
       let { fileResult, errorMessage: errMsg, isError: errFlag } = handleFile(args.join(" "));
       result = fileResult;
@@ -318,12 +257,10 @@ function prompt() {
       isError = errFlag;
     }
 
-    // Redirect stdout but NOT stderr
     if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "));
     }
 
-    // Print error message separately
     if (errorMessage) {
       console.error(errorMessage);
     }
@@ -335,5 +272,3 @@ function prompt() {
     prompt();
   });
 }
-
-prompt();
