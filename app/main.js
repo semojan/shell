@@ -229,6 +229,10 @@ function prompt() {
         isError = errFlag;
       }
 
+      if (redirect) {
+        console.log(result)
+      }
+
     } else if (answer.startsWith("cd ")) {
 
       const inPath = answer.split("cd ")[1];
