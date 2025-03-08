@@ -156,7 +156,7 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-function handleCat(answer) {
+function handleExternal(answer) {
   const fileName = answer.split(" ")[0];
   const args = answer.split(fileName + " ")[1];
   const paths = process.env.PATH.split(":");
@@ -210,7 +210,7 @@ function prompt() {
     } else if (answer.startsWith("cat ")) {
 
       // result = handleCat(answer.split("cat ")[1]);
-      let { isFile, fileResult } = handleCat("cat " + args.join(" "));
+      let { isFile, fileResult } = handleExternal("cat " + args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
@@ -230,7 +230,7 @@ function prompt() {
     } else if (answer.startsWith("ls ")) {
 
       // result = handleCat(answer.split("cat ")[1]);
-      let { isFile, fileResult } = handleCat("ls " + args.join(" "));
+      let { isFile, fileResult } = handleExternal("ls " + args.join(" "));
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
