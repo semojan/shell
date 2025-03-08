@@ -217,9 +217,6 @@ function prompt() {
       let { isFile, fileResult, isError: errFlag } = handleExternal("cat " + args.join(" "));
       result = fileResult;
       isError = errFlag;
-      if (redirect) {
-        console.log(result)
-      }
 
     } else if (answer.startsWith("cd ")) {
 
