@@ -245,7 +245,7 @@ function prompt() {
       }
     }
 
-    if (redirect && resul !== null) {
+    if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "));
     }
 
