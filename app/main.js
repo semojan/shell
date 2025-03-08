@@ -177,7 +177,6 @@ function handleExternal(answer) {
 
   try {
     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
-    console.log(output)
     return { isFile: true, fileResult: output };
   } catch (error) {
     return { isFile: false, fileResult: null };
@@ -215,6 +214,7 @@ function prompt() {
 
       // result = handleCat(answer.split("cat ")[1]);
       let { isFile, fileResult } = handleExternal("cat " + args.join(" "));
+      console.log(fileResult)
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
