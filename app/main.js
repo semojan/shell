@@ -225,7 +225,7 @@ function prompt() {
     } else if (answer.startsWith("echo ")) {
 
       // const text = answer.split("echo ")[1];
-      result = handleEcho(args.slice(1));
+      result = handleEcho(args.slice(1).join(" "));
 
     } else if (answer.startsWith("ls ")) {
 
