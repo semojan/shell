@@ -157,36 +157,29 @@ function handleFile(answer) {
 }
 
 function handleExternal(answer, redirect) {
-  // const fileName = answer.split(" ")[0];
-  // const args = answer.split(fileName + " ")[1];
-  // const paths = process.env.PATH.split(":");
+  const fileName = answer.split(" ")[0];
+  const args = answer.split(fileName + " ")[1];
+  const paths = process.env.PATH.split(":");
 
-  // let filePath;
-  // for (const p of paths) {
-  //   // pToCheck = path.join(p, fileName);
-  //   if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-  //     // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-  //     filePath = p;
-  //     break;
-  //   } else {
-  //     filePath = null;
-  //   }
-  // }
+  let filePath;
+  for (const p of paths) {
+    // pToCheck = path.join(p, fileName);
+    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+      filePath = p;
+      break;
+    } else {
+      filePath = null;
+    }
+  }
 
-  // let output = null;
+  let output = null;
 
-  // try {
-  //   output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
-  //   return { isFile: true, fileResult: output };
-  // } catch (error) {
-  //   return { isFile: false, fileResult: null };
-  // }
   try {
-    const output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output, isError: false };
   } catch (error) {
-    const errorOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
-    return { isFile: false, fileResult: errorOutput, isError: true };
+    return { isFile: false, fileResult: null, isError: true };
   }
 }
 
