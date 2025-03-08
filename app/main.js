@@ -272,3 +272,5 @@ function prompt() {
     prompt();
   });
 }
+
+prompt();
