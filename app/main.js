@@ -181,6 +181,7 @@ function handleExternal(answer, redirect) {
   // } catch (error) {
   //   return { isFile: false, fileResult: null };
   // }
+  let args = answer.split(" ");
   if (redirect) {
     const command = args.slice(0, idx);
     const filePath = args[idx + 1];
