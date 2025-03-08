@@ -186,9 +186,9 @@ function handleRedirect(result, args) {
     const filePath = args[index + 1];
     try {
       fs.writeFileSync(filePath, result, { flag: "w" });
-      console.log(`Output redirected to ${filePath}`);
+      return null;
     } catch (error) {
-      console.error(`Error writing to file: ${error.message}`);
+      return `${filePath}: No such file or directory`
     }
   }
 }
