@@ -177,14 +177,11 @@ function handleExternal(answer) {
 
   try {
     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+    console.log(output)
     return { isFile: true, fileResult: output };
   } catch (error) {
-    // Here we can capture the error output (stderr) separately
-    const errorOutput = error.stderr.toString().trim();
-    return { isFile: false, fileResult: errorOutput };
+    return { isFile: false, fileResult: null };
   }
-
-  // return { isFile: false, fileResult: null };
 }
 
 function handleRedirect(result, args) {
