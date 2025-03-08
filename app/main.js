@@ -156,31 +156,59 @@ function handleFile(answer) {
   return { isFile: false, fileResult: null };
 }
 
-function handleExternal(answer) {
-  const fileName = answer.split(" ")[0];
-  const args = answer.split(fileName + " ")[1];
-  const paths = process.env.PATH.split(":");
+function handleExternal(answer, redirect) {
+  // const fileName = answer.split(" ")[0];
+  // const args = answer.split(fileName + " ")[1];
+  // const paths = process.env.PATH.split(":");
 
-  let filePath;
-  for (const p of paths) {
-    // pToCheck = path.join(p, fileName);
-    if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
-      // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
-      filePath = p;
-      break;
-    } else {
-      filePath = null;
-    }
+  // let filePath;
+  // for (const p of paths) {
+  //   // pToCheck = path.join(p, fileName);
+  //   if (fs.existsSync(p) && fs.readdirSync(p).includes(fileName)) {
+  //     // execFileSync(fileName, args, { encoding: 'utf-8', stdio: 'inherit' });
+  //     filePath = p;
+  //     break;
+  //   } else {
+  //     filePath = null;
+  //   }
+  // }
+
+  // let output = null;
+
+  // try {
+  //   output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
+  //   return { isFile: true, fileResult: output };
+  // } catch (error) {
+  //   return { isFile: false, fileResult: null };
+  // }
+  if (redirect) {
+    const command = args.slice(0, idx);
+    const filePath = args[idx + 1];
+    return new Promise((resolve) => {
+      const child = spawn(command[0], command.slice(1), {
+        stdio: ["ignore", fs.openSync(filePath, "w"), "inherit"],
+      });
+      child.on("error", () => {
+        console.log(`${command.slice(2)}: No such file or directory`);
+        resolve(true);
+      });
+      child.on("close", (code) => {
+        resolve(true);
+      });
+    });
   }
-
-  let output = null;
-
-  try {
-    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
-    return { isFile: true, fileResult: output };
-  } catch (error) {
-    return { isFile: false, fileResult: null };
-  }
+  return new Promise((resolve) => {
+    const child = spawn(args[0], args.slice(1), {
+      stdio: "inherit",
+    });
+    child.on("error", () => {
+      console.log(`${args[0]}: command not found`);
+      resolve(true);
+    });
+    child.on("close", (code) => {
+      resolve(true);
+    });
+  });
 }
 
 function handleRedirect(result, args) {
@@ -213,7 +241,7 @@ function prompt() {
     } else if (answer.startsWith("cat ")) {
 
       // result = handleCat(answer.split("cat ")[1]);
-      let { isFile, fileResult } = handleExternal("cat " + args.join(" "));
+      let { isFile, fileResult } = handleExternal("cat " + args.join(" "), redirect);
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
