@@ -196,7 +196,7 @@ function handleRedirect(result, args) {
 function prompt() {
   rl.question("$ ", (answer) => {
 
-    const args = answer.split(" ").slice(1);
+    let args = answer.split(" ").slice(1);
     const redirect = args.includes(">") || args.includes("1>");
 
     if (redirect) {
@@ -245,8 +245,8 @@ function prompt() {
       }
     }
 
-    if (redirect) {
-      result = handleRedirect(result, args);
+    if (redirect && resul !== null) {
+      handleRedirect(result, answer.split(" "));
     }
 
     result && console.log(result);
