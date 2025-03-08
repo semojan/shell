@@ -176,7 +176,7 @@ function handleExternal(answer) {
   let output = null;
 
   if (filePath) {
-    output = execSync(answer).toString().trim();
+    output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output };
   }
 
@@ -185,19 +185,6 @@ function handleExternal(answer) {
   // }
   return { isFile: false, fileResult: output };
 }
-function handleExternal(answer) {
-  try {
-    // Execute command, capture both stdout and stderr
-    let output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] });
-
-    return { isFile: true, fileResult: output.trim() };
-  } catch (error) {
-    // If error occurs, still check stdout to allow redirection
-    let stdout = error.stdout ? error.stdout.toString().trim() : "";
-    return { isFile: true, fileResult: stdout };
-  }
-}
-
 
 function handleRedirect(result, args) {
   const index = args.findIndex(arg => [">", "1>"].includes(arg));
