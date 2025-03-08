@@ -225,7 +225,7 @@ function prompt() {
     } else if (answer.startsWith("echo ")) {
 
       // const text = answer.split("echo ")[1];
-      result = handleEcho(args.length > 1 ? args.slice(1).join(" ") : "");
+      result = handleEcho(args.join(" "));
 
     } else if (answer.startsWith("ls ")) {
 
@@ -243,7 +243,7 @@ function prompt() {
     } else if (answer.startsWith("type")) {
 
       // const command = answer.split("type ")[1];
-      result = handleType(args.slice(1));
+      result = handleType(args.join(" "));
 
     } else {
       let { isFile, fileResult } = handleFile(args.join(" "));
