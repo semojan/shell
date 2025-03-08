@@ -227,6 +227,15 @@ function prompt() {
       // const text = answer.split("echo ")[1];
       result = handleEcho(args.slice(1));
 
+    } else if (answer.startsWith("ls ")) {
+
+      // result = handleCat(answer.split("cat ")[1]);
+      let { isFile, fileResult } = handleCat("ls " + args.join(" "));
+      if (!isFile) {
+        result = `${answer}: command not found`;
+      } else {
+        result = fileResult;
+      }
     } else if (answer === "pwd") {
 
       result = handlePwd();
