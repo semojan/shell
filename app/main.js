@@ -180,18 +180,30 @@ function handleExternal(answer) {
   return { isFile: false, fileResult: null };
 }
 
-function handleRedirect(result, args) {
-  const index = args.findIndex(arg => [">", "1>"].includes(arg));
-  if (index !== -1 && index + 1 < args.length) {
-    const filePath = args[index + 1];
-    try {
-      fs.writeFileSync(filePath, result, { flag: "w" });
-      return null;
-    } catch (error) {
-      return `${filePath}: No such file or directory`
-    }
+// function handleRedirect(result, args) {
+//   const index = args.findIndex(arg => [">", "1>"].includes(arg));
+//   if (index !== -1 && index + 1 < args.length) {
+//     const filePath = args[index + 1];
+//     try {
+//       fs.writeFileSync(filePath, result, { flag: "w" });
+//       return null;
+//     } catch (error) {
+//       return `${filePath}: No such file or directory`
+//     }
+//   }
+// }
+
+function handleExternal(answer) {
+  try {
+    let output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] });
+
+    return { isFile: true, fileResult: output.trim() };
+  } catch (error) {
+    let stdout = error.stdout ? error.stdout.toString().trim() : "";
+    return { isFile: true, fileResult: stdout };
   }
 }
+
 
 function prompt() {
   rl.question("$ ", (answer) => {
