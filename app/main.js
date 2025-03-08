@@ -179,10 +179,8 @@ function handleExternal(answer, redirect) {
     output = execSync(answer, { encoding: "utf-8", stdio: ["pipe", "pipe", "pipe"] }).toString().trim();
     return { isFile: true, fileResult: output, isError: false };
   } catch (error) {
-    const stdoutOutput = error.stdout ? error.stdout.toString().trim() : "";
-    const stderrOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
-
-    return { isFile: true, fileResult: stdoutOutput, errorMessage: stderrOutput, isError: true };
+    const errorOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
+    return { isFile: false, fileResult: errorOutput, isError: true };
   }
 }
 
@@ -216,9 +214,8 @@ function prompt() {
       handleExit();
     } else if (answer.startsWith("cat ")) {
 
-      let { fileResult, errorMessage: errMsg, isError: errFlag } = handleExternal("cat " + args.join(" "));
+      let { isFile, fileResult, isError: errFlag } = handleExternal("cat " + args.join(" "));
       result = fileResult;
-      errorMessage = errMsg;
       isError = errFlag;
 
     } else if (answer.startsWith("cd ")) {
@@ -233,9 +230,8 @@ function prompt() {
 
     } else if (answer.startsWith("ls ")) {
 
-      let { fileResult, errorMessage: errMsg, isError: errFlag } = handleExternal("ls " + args.join(" "));
+      let { isFile, fileResult, isError: errFlag } = handleExternal("ls " + args.join(" "));
       result = fileResult;
-      errorMessage = errMsg;
       isError = errFlag;
 
     } else if (answer === "pwd") {
@@ -261,10 +257,6 @@ function prompt() {
       handleRedirect(result, answer.split(" "));
     } else if (result !== null) {
       console.log(result);
-    }
-
-    if (errorMessage) {
-      console.error(errorMessage);
     }
 
     prompt();
