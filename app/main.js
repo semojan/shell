@@ -204,7 +204,7 @@ function handleRedirect(result, args, type) {
     const filePath = args[index + 1];
     try {
       if (type !== 2 && type !== 3) {
-        result += "\n";
+        result = result + "\n";
       }
       fs.writeFileSync(filePath, result, { flag: type === 3 || type === 4 ? "a" : "w" });
       return null;
