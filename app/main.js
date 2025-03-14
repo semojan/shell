@@ -206,7 +206,7 @@ function handleRedirect(result, args, type) {
       if (type === 1 || type === 2) {
         fs.writeFileSync(filePath, result, { flag: "w" });
       } else if (type === 3 || type === 4) {
-        fs.appendFileSync(filePath, result + "\n");
+        fs.writeFileSync(filePath, result, { flag: "a" });
       }
       return null;
     } catch (error) {
