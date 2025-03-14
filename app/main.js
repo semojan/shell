@@ -261,7 +261,7 @@ function prompt() {
       result = handleType(args.join(" "));
 
     } else {
-      let { isFile, fileResult, errorMessage: errMsg, isError: errFlag } = handleExternal("ls " + args.join(" "));
+      let { isFile, fileResult, errorMessage: errMsg, isError: errFlag } = handleFile("ls " + args.join(" "));
       result = fileResult;
       errorMessage = errMsg;
       isError = errFlag;
