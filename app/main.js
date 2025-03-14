@@ -42,7 +42,7 @@ const rl = readline.createInterface({
         console.log(lastCompletion.hits.join("  ") + "this was result");
       }
       lastCompletion.count = 0;
-      return [null, line.trim()];
+      return [lastCompletion.hits, line.trim()];
     }
 
     return [hits, line.trim()];
