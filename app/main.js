@@ -289,7 +289,7 @@ function prompt() {
       console.log(result);
     }
 
-    if (result !== null && (!isError || !redirect2) && !redirect) {
+    if (result !== null && !redirect2 && !redirect) {
       console.log(result);
     }
 
