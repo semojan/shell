@@ -35,7 +35,7 @@ const rl = readline.createInterface({
 
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07");
-      return [[""], line.trim()];
+      return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
       console.log("second")
       console.log(lastCompletion)
