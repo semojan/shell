@@ -33,11 +33,11 @@ const rl = readline.createInterface({
       lastCompletion.hits = hits;
     }
 
-    console.log("")
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07"); // Bell sound
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
+      console.log(lastCompletion)
       if (hits.length > 0) {
         console.log("\n" + hits.join("  ")); // Output correctly formatted suggestions
       }
