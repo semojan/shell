@@ -286,6 +286,7 @@ function prompt() {
       } else {
         result = fileResult;
       }
+
     }
 
     if (redirect && result !== null) {
