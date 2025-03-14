@@ -265,7 +265,6 @@ function prompt() {
 
     } else {
       let { isFile, fileResult, errorMessage: errMsg, isError: errFlag } = handleFile("ls " + args.join(" "));
-      result = fileResult;
       errorMessage = errMsg;
       isError = errFlag;
       if (!isFile) {
