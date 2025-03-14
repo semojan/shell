@@ -192,7 +192,7 @@ function handleExternal(answer, redirect) {
 function handleAppend(result, args, type) {
   let index = 0;
   if (type === 1) {
-    index = args.findIndex(arg => [">>", "1>>"].includes(arg));
+    index = args.findIndex(arg => arg === ">>" || arg === "1>>");
   } else if (type === 2) {
     index = args.findIndex(arg => ["2>>"].includes(arg));
   }
