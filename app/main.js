@@ -306,6 +306,7 @@ function prompt() {
     }
 
     if (append && result !== null) {
+      console.log("append handle...")
       handleAppend(result, answer.split(" "), 1, index);
     }
 
