@@ -24,7 +24,6 @@ const rl = readline.createInterface({
     });
 
     const hits = [...executables].filter((c) => c.startsWith(line.trim()));
-    console.log(hits)
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
