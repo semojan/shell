@@ -23,7 +23,7 @@ const rl = readline.createInterface({
       }
     });
 
-    const hits = executables.filter((c) => c.startsWith(line));
+    const hits = executables.filter((c) => c.startsWith(line.trim()));
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
@@ -35,16 +35,16 @@ const rl = readline.createInterface({
 
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07");
-      return [[], line];
+      return [[], line.trim()];
     } else if (lastCompletion.count === 2) {
       if (hits.length > 0) {
         console.log("\n" + hits.join("  "));
       }
       lastCompletion.count = 0;
-      return [hits, line];
+      return [hits, line.trim()];
     }
 
-    return [hits, line];
+    return [hits, line.trim()];
   },
 });
 
