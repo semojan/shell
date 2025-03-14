@@ -310,10 +310,12 @@ function prompt() {
     }
 
     if ((redirect2 && result !== "") || (append2 && result !== "")) {
+      console.log("res emplty")
       console.log(result);
     }
 
     if (result !== null && !redirect2 && !redirect && !append && !append2) {
+      console.log("res null")
       console.log(result);
     }
     // if (redirect && result !== null) {
