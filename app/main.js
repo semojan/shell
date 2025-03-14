@@ -39,7 +39,7 @@ const rl = readline.createInterface({
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
       if (hits.length > 0) {
-        console.log(hits.join("  ") + "this was result");
+        console.log(lastCompletion.hits.join("  ") + "this was result");
       }
       lastCompletion.count = 0;
       return [hits, line.trim()];
