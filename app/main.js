@@ -206,6 +206,7 @@ function handleAppend(result, args, type) {
       return `${filePath}: No such file or directory`
     }
   }
+  console.log("busted")
   return false;
 }
 
