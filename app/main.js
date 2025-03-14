@@ -195,7 +195,7 @@ function handleRedirect(result, args, type) {
     index = args.findIndex(arg => [">", "1>"].includes(arg));
   } else if (type === 2) {
     index = args.findIndex(arg => ["2>"].includes(arg));
-  } else if (typre === 3) {
+  } else if (type === 3) {
     index = args.findIndex(arg => [">>", "1>>"].includes(arg));
   } else if (type === 4) {
     index = args.findIndex(arg => ["2>>"].includes(arg));
