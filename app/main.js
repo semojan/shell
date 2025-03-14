@@ -38,6 +38,7 @@ const rl = readline.createInterface({
       console.log("")
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
+      console.log("")
       if (lastCompletion.hits.length > 0) {
         console.log(lastCompletion.hits.join("  ")); // Output correctly formatted suggestions
       }
