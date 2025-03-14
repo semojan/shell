@@ -203,7 +203,7 @@ function handleRedirect(result, args, type) {
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
-      if (type === 1 || type === 3) {
+      if (type !== 2) {
         result += "\n";
       }
       fs.writeFileSync(filePath, result, { flag: type === 3 || type === 4 ? "a" : "w" });
@@ -293,30 +293,65 @@ function prompt() {
 
     }
 
+    // if (redirect && result !== null) {
+    //   handleRedirect(result, answer.split(" "), 1);
+    // } else if (append && result !== null) {
+    //   handleRedirect(result, answer.split(" "), 3);
+    // }
+
+    // if ((redirect && errorMessage) || (append && errorMessage)) {
+    //   console.log(errorMessage);
+    // }
+
+    // if (redirect2) {
+    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
+    // } else if (append2){
+    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
+    // }
+
+    // if ((redirect2 && result !== "") || (append2 && result !== "")) {
+    //   console.log(result);
+    // }
+
+    // if (result !== null && !redirect2 && !redirect && !append && !append2) {
+    //   console.log(result);
+    // }
     if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "), 1);
-    } else if (append && result !== null) {
-      handleRedirect(result, answer.split(" "), 3);
     }
 
-    if ((redirect && errorMessage) || (append && errorMessage)) {
+    if (redirect && errorMessage) {
       console.log(errorMessage);
     }
 
     if (redirect2) {
       handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
-    } else if (append2) {
+    }
+
+    if (redirect2 && result !== "") {
+      console.log(result);
+    }
+
+    if (append && result !== null) {
+      handleRedirect(result, answer.split(" "), 3);
+    }
+
+    if (append && errorMessage) {
+      console.log(errorMessage);
+    }
+
+    if (append2) {
       handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
     }
 
-    if ((redirect2 && result !== "") || (append2 && result !== "")) {
+    if (append2 && result !== "") {
       console.log(result);
     }
+
 
     if (result !== null && !redirect2 && !redirect && !append && !append2) {
       console.log(result);
     }
-
     prompt();
   });
 }
