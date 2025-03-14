@@ -10,7 +10,13 @@ const rl = readline.createInterface({
   completer: (line) => {
     const builtins = ["echo ", "exit "];
     const hits = builtins.filter((c) => c.startsWith(line));
-    return [hits.length ? hits : builtins, line];
+
+    if (hits.length === 0) {
+      process.stdout.write("\a");
+      return [[], line];
+    }
+
+    return [hits, line];
   },
 });
 
