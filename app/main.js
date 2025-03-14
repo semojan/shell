@@ -189,39 +189,26 @@ function handleExternal(answer, redirect) {
   }
 }
 
-function handleAppend(result, args, type) {
-  let index = 0;
-  if (type === 1) {
-    index = args.findIndex(arg => [">>", "1>>"].includes(arg));
-  } else if (type === 2) {
-    index = args.findIndex(arg => ["2>>"].includes(arg));
-  }
-  console.log(args)
-  console.log(index)
-  if (index !== -1 && index + 1 < args.length) {
-    const filePath = args[index + 1];
-    try {
-      fs.appendFileSync(filePath, result + "\n");
-      console.log(`Appending to file: ${filePath}, data: "${result}"`);
-      return null;
-    } catch (error) {
-      return `${filePath}: No such file or directory`
-    }
-  }
-  return false;
-}
-
 function handleRedirect(result, args, type) {
   let index = 0;
   if (type === 1) {
     index = args.findIndex(arg => [">", "1>"].includes(arg));
   } else if (type === 2) {
     index = args.findIndex(arg => ["2>"].includes(arg));
+  } else if (typre === 3) {
+    index = args.findIndex(arg => [">>", "1>>"].includes(arg));
+  } else if (type === 4) {
+    index = args.findIndex(arg => ["2>>"].includes(arg));
   }
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
-      fs.writeFileSync(filePath, result, { flag: "w" });
+      if (type === 1 || type === 2) {
+        fs.writeFileSync(filePath, result, { flag: "w" });
+      } else if (type === 3 || type === 4) {
+        fs.appendFileSync(filePath, result + "\n");
+        console.log(`Appending to file: ${filePath}, data: "${result}"`);
+      }
       return null;
     } catch (error) {
       return `${filePath}: No such file or directory`
@@ -321,7 +308,7 @@ function prompt() {
     }
 
     if (append && result !== null) {
-      handleAppend(result, answer.split(" "), index);
+      handleRedirect(result, answer.split(" "), 3);
     }
 
     if (append && errorMessage) {
