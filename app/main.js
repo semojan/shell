@@ -196,6 +196,8 @@ function handleAppend(result, args, type) {
   } else if (type === 2) {
     index = args.findIndex(arg => ["2>>"].includes(arg));
   }
+  console.log(args)
+  console.log(index)
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
@@ -206,7 +208,6 @@ function handleAppend(result, args, type) {
       return `${filePath}: No such file or directory`
     }
   }
-  console.log("busted")
   return false;
 }
 
