@@ -191,7 +191,7 @@ function handleExternal(answer, redirect) {
 
 function handleAppend(result, args, index) {
   if (index !== -1 && index + 1 < args.length) {
-    const filePath = args[index + 1];
+    const filePath = args[indexs];
     try {
       fs.appendFileSync(filePath, result + "\n");
       console.log(`Appending to file: ${filePath}, data: "${result}"`);
@@ -205,7 +205,7 @@ function handleAppend(result, args, index) {
 
 function handleRedirect(result, args, index) {
   if (index !== -1 && index + 1 < args.length) {
-    const filePath = args[index + 1];
+    const filePath = args[index];
     try {
       fs.writeFileSync(filePath, result, { flag: "w" });
       return null;
