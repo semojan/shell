@@ -194,6 +194,7 @@ function handleAppend(result, args, index) {
     const filePath = args[index + 1];
     try {
       fs.appendFileSync(filePath, result + "\n");
+      console.log(`Appending to file: ${filePath}, data: "${result}"`);
       return null;
     } catch (error) {
       return `${filePath}: No such file or directory`
