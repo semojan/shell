@@ -12,7 +12,7 @@ const rl = readline.createInterface({
     const hits = builtins.filter((c) => c.startsWith(line));
 
     if (hits.length === 0) {
-      process.stdout.write("\a");
+      process.stdout.write("\x07");
       return [[], line];
     }
 
