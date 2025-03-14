@@ -33,6 +33,7 @@ const rl = readline.createInterface({
       lastCompletion.hits = hits;
     }
 
+    console.log("")
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07"); // Bell sound
       return [null, line.trim()];
@@ -41,7 +42,7 @@ const rl = readline.createInterface({
         console.log("\n" + hits.join("  ")); // Output correctly formatted suggestions
       }
       lastCompletion.count = 1; // Keep track of state instead of resetting immediately
-      return [hits, line.trim()];  // Ensure the prompt remains unchanged
+      return [hits, line.trim()];
     }
 
     return [hits, line.trim()];
