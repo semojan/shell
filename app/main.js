@@ -278,11 +278,14 @@ function prompt() {
 
     if (redirect2 && errorMessage) {
       handleRedirect(errorMessage, answer.split(" "), 2);
+    } else if (redirect2 && !isError) {
+      handleRedirect(errorMessage, answer.split(" "), 2);
+      console.log(result);
     } else if (errorMessage) {
       console.error(errorMessage);
     }
 
-    if ((!redirect && !redirect2 && result !== null) || (redirect2 && !isError)) {
+    if ((!redirect && !redirect2 && result !== null)) {
       console.log(result);
     }
 
