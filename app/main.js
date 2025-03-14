@@ -189,14 +189,20 @@ function handleExternal(answer, redirect) {
   }
 }
 
-function handleRedirect(result, args, type) {
-  let index = 0;
-  if (type === 1) {
-    index = args.findIndex(arg => [">", "1>"].includes(arg));
-  } else if (type === 2) {
-    index = args.findIndex(arg => ["2>"].includes(arg));
+function handleAppend(result, args, type, index) {
+  if (index !== -1 && index + 1 < args.length) {
+    const filePath = args[index + 1];
+    try {
+      fsSync.writeFileSync(stdoutFile, output + "\n", { flag: appendStdout ? 'a' : 'w' });
+      return null;
+    } catch (error) {
+      return `${filePath}: No such file or directory`
+    }
   }
+  return false;
+}
 
+function handleRedirect(result, args, type, index) {
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
@@ -215,12 +221,18 @@ function prompt() {
     let args = answer.split(" ").slice(1);
     const redirect = args.includes(">") || args.includes("1>");
     const redirect2 = args.includes("2>");
+    const append = args.includes(">>") || args.includes("1>>");
+
+    let index = 0;
 
     if (redirect) {
-      const index = args.findIndex(arg => arg === ">" || arg === "1>");
+      index = args.findIndex(arg => arg === ">" || arg === "1>");
       args = args.slice(0, index);
     } else if (redirect2) {
-      const index = args.findIndex(arg => arg === "2>");
+      index = args.findIndex(arg => arg === "2>");
+      args = args.slice(0, index);
+    } else if (append) {
+      index = args.findIndex(arg => arg === ">>" || arg === "1>>");
       args = args.slice(0, index);
     }
 
@@ -277,7 +289,7 @@ function prompt() {
     }
 
     if (redirect && result !== null) {
-      handleRedirect(result, answer.split(" "), 1);
+      handleRedirect(result, answer.split(" "), 1, index);
     }
 
     if (redirect && errorMessage) {
@@ -285,11 +297,19 @@ function prompt() {
     }
 
     if (redirect2) {
-      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
+      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2, index);
     }
 
     if (redirect2 && result !== "") {
       console.log(result);
+    }
+
+    if (append && result !== null) {
+      handleAppend(result, answer.split(" "), 1, index);
+    }
+
+    if (append && errorMessage) {
+      console.log(errorMessage);
     }
 
     if (result !== null && !redirect2 && !redirect) {
