@@ -222,6 +222,7 @@ function prompt() {
     const redirect = args.includes(">") || args.includes("1>");
     const redirect2 = args.includes("2>");
     const append = args.includes(">>") || args.includes("1>>");
+    const append2 = args.includes("2>");
 
     let index = 0;
 
@@ -233,6 +234,9 @@ function prompt() {
       args = args.slice(0, index);
     } else if (append) {
       index = args.findIndex(arg => arg === ">>" || arg === "1>>");
+      args = args.slice(0, index);
+    } else if (append2) {
+      index = args.findIndex(arg => arg === "2>>");
       args = args.slice(0, index);
     }
 
@@ -291,29 +295,25 @@ function prompt() {
 
     if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "), 1);
+    } else if (append && result !== null) {
+      handleRedirect(result, answer.split(" "), 3);
     }
 
-    if (redirect && errorMessage) {
+    if ((redirect && errorMessage) || (append && errorMessage)) {
       console.log(errorMessage);
     }
 
     if (redirect2) {
       handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
+    } else if (append2) {
+      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
     }
 
-    if (redirect2 && result !== "") {
+    if ((redirect2 && result !== "") || (append2 && result !== "")) {
       console.log(result);
     }
 
-    if (append && result !== null) {
-      handleRedirect(result, answer.split(" "), 3);
-    }
-
-    if (append && errorMessage) {
-      console.log(errorMessage);
-    }
-
-    if (result !== null && !redirect2 && !redirect && !append) {
+    if (result !== null && !redirect2 && !redirect && !append && !append2) {
       console.log(result);
     }
 
