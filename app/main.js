@@ -11,19 +11,19 @@ const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   completer: (line) => {
-    const executables = builtin;
+    let executables = new Set(builtin);
     const path = process.env.PATH.split(":");
 
     path.forEach((dir) => {
       try {
         const files = fs.readdirSync(dir);
-        executables.push(...files);
+        files.forEach(file => executables.add(file));
       } catch (err) {
         // Ignore errors reading directories
       }
     });
 
-    const hits = executables.filter((c) => c.startsWith(line.trim()));
+    const hits = [...executables].filter((c) => c.startsWith(line.trim()));
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
