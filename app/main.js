@@ -312,7 +312,7 @@ function prompt() {
       console.log(errorMessage);
     }
 
-    if (result !== null && !redirect2 && !redirect) {
+    if (result !== null && !redirect2 && !redirect && !append) {
       console.log(result);
     }
 
