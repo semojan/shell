@@ -150,7 +150,7 @@ function handleFile(answer) {
       return { isFile: true, fileResult: output, isError: false, errorMessage: null };
     } catch (error) {
       const stdoutOutput = error.stdout ? error.stdout.toString().trim() : "";
-      const stderrOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
+      const stderrOutput = error.stderr ? error.stderr.toString().trim() : "";
 
       return { isFile: true, fileResult: stdoutOutput, errorMessage: stderrOutput, isError: true };
     }
@@ -183,7 +183,7 @@ function handleExternal(answer, redirect) {
     return { isFile: true, fileResult: output, isError: false, errorMessage: null };
   } catch (error) {
     const stdoutOutput = error.stdout ? error.stdout.toString().trim() : "";
-    const stderrOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
+    const stderrOutput = error.stderr ? error.stderr.toString().trim() : "";
 
     return { isFile: true, fileResult: stdoutOutput, errorMessage: stderrOutput, isError: true };
   }
