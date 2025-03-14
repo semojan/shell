@@ -38,12 +38,11 @@ const rl = readline.createInterface({
       console.log("")
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
-      console.log(hits)
-      if (hits.length > 0) {
-        console.log(hits.join("  ")); // Output correctly formatted suggestions
+      if (lastCompletion.hits.length > 0) {
+        console.log(lastCompletion.hits.join("  ")); // Output correctly formatted suggestions
       }
       lastCompletion.count = 1; // Keep track of state instead of resetting immediately
-      return [hits, line.trim()];
+      return [lastCompletion.hits, line.trim()];
     }
 
     return [hits, line.trim()];
