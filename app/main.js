@@ -291,8 +291,7 @@ function prompt() {
     }
 
     if (redirect && result !== null) {
-      handleRedirect(result, answer.split(" "), index);
-      console.log(result)
+      handleRedirect(result, answer.split(" "), 1);
     }
 
     if (redirect && errorMessage) {
@@ -300,7 +299,7 @@ function prompt() {
     }
 
     if (redirect2) {
-      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), index);
+      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
     }
 
     if (redirect2 && result !== "") {
