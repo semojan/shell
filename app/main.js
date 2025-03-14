@@ -41,7 +41,6 @@ const rl = readline.createInterface({
       console.log(lastCompletion.hits.join("  "));
       return [lastCompletion.hits, line.trim()];
     }
-
     return [hits, line.trim()];
   },
 });
