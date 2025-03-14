@@ -32,13 +32,19 @@ const rl = readline.createInterface({
       lastCompletion.count = 1;
       lastCompletion.hits = hits;
     }
+    console.log("first check:")
+    console.log(lastCompletion)
+    console.log("first check:")
 
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07");
       return [[], line.trim()];
     } else if (lastCompletion.count === 2) {
+      console.log("second")
+      console.log(lastCompletion)
+      console.log("second check")
       if (hits.length > 0) {
-        console.log("\n" + hits.join("  "));
+        console.log("\n" + hits.join("  ") + "this was result");
       }
       lastCompletion.count = 0;
       return [hits, line.trim()];
