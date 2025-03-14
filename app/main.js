@@ -293,65 +293,65 @@ function prompt() {
 
     }
 
-    // if (redirect && result !== null) {
-    //   handleRedirect(result, answer.split(" "), 1);
-    // } else if (append && result !== null) {
-    //   handleRedirect(result, answer.split(" "), 3);
-    // }
-
-    // if ((redirect && errorMessage) || (append && errorMessage)) {
-    //   console.log(errorMessage);
-    // }
-
-    // if (redirect2) {
-    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
-    // } else if (append2){
-    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
-    // }
-
-    // if ((redirect2 && result !== "") || (append2 && result !== "")) {
-    //   console.log(result);
-    // }
-
-    // if (result !== null && !redirect2 && !redirect && !append && !append2) {
-    //   console.log(result);
-    // }
     if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "), 1);
+    } else if (append && result !== null) {
+      handleRedirect(result, answer.split(" "), 3);
     }
 
-    if (redirect && errorMessage) {
+    if ((redirect && errorMessage) || (append && errorMessage)) {
       console.log(errorMessage);
     }
 
     if (redirect2) {
       handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
-    }
-
-    if (redirect2 && result !== "") {
-      console.log(result);
-    }
-
-    if (append && result !== null) {
-      handleRedirect(result, answer.split(" "), 3);
-    }
-
-    if (append && errorMessage) {
-      console.log(errorMessage);
-    }
-
-    if (append2) {
+    } else if (append2) {
       handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
     }
 
-    if (append2 && result !== "") {
+    if ((redirect2 && result !== "") || (append2 && result !== "")) {
       console.log(result);
     }
-
 
     if (result !== null && !redirect2 && !redirect && !append && !append2) {
       console.log(result);
     }
+    // if (redirect && result !== null) {
+    //   handleRedirect(result, answer.split(" "), 1);
+    // }
+
+    // if (redirect && errorMessage) {
+    //   console.log(errorMessage);
+    // }
+
+    // if (redirect2) {
+    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
+    // }
+
+    // if (redirect2 && result !== "") {
+    //   console.log(result);
+    // }
+
+    // if (append && result !== null) {
+    //   handleRedirect(result, answer.split(" "), 3);
+    // }
+
+    // if (append && errorMessage) {
+    //   console.log(errorMessage);
+    // }
+
+    // if (append2) {
+    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
+    // }
+
+    // if (append2 && result !== "") {
+    //   console.log(result);
+    // }
+
+
+    // if (result !== null && !redirect2 && !redirect && !append && !append2) {
+    //   console.log(result);
+    // }
     prompt();
   });
 }
