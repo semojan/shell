@@ -4,12 +4,26 @@ const path = require("path");
 const fs = require("fs");
 const { execSync, execFileSync } = require('child_process');
 
+const builtin = ["cd", "echo", "exit", "pwd", "type"];
+
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   completer: (line) => {
-    const builtins = ["echo ", "exit "];
-    const hits = builtins.filter((c) => c.startsWith(line));
+    const builtins = builtin;
+    const path = process.env.PATH.split(":");
+
+    path.forEach((dir) => {
+      try {
+        const files = fs.readdirSync(dir);
+        builtin.push(...files);
+      } catch (err) {
+        // Ignore errors reading directories
+      }
+    });
+    const hits = builtins
+      .filter((c) => c.startsWith(line))
+      .map((c) => (c += " "));
 
     if (hits.length === 0) {
       process.stdout.write("\x07");
@@ -19,8 +33,6 @@ const rl = readline.createInterface({
     return [hits, line];
   },
 });
-
-const builtin = ["cd", "echo", "exit", "pwd", "type"];
 
 function parseQuotedString(text) {
   let inSingleQuote = false;
