@@ -307,7 +307,6 @@ function prompt() {
     }
 
     if (append && result !== null) {
-      console.log(" appending... ")
       handleAppend(result, answer.split(" "), index);
     }
 
