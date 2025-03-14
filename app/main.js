@@ -285,7 +285,7 @@ function prompt() {
       handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
     }
 
-    if (!redirect && !redirect2 && result !== null) {
+    if (!redirect && result !== null) {
       console.log(result);
     }
 
