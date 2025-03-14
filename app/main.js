@@ -219,6 +219,9 @@ function prompt() {
     if (redirect) {
       const index = args.findIndex(arg => arg === ">" || arg === "1>");
       args = args.slice(0, index);
+    } else if (redirect2) {
+      const index = args.findIndex(arg => arg === "2>");
+      args = args.slice(0, index);
     }
 
     let result = null;
@@ -274,15 +277,16 @@ function prompt() {
 
     if (redirect && result !== null) {
       handleRedirect(result, answer.split(" "), 1);
+    } else if (!redirect2 && errorMessage) {
+      console.log(errorMessage);
     }
 
-    if (redirect2 && errorMessage) {
-      handleRedirect(errorMessage, answer.split(" "), 2);
-    } else if (redirect2 && !isError) {
-      handleRedirect(errorMessage, answer.split(" "), 2);
+    if (redirect2) {
+      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
+    }
+
+    if (redirect2 && !isError) {
       console.log(result);
-    } else if (errorMessage) {
-      console.error(errorMessage);
     }
 
     if ((!redirect && !redirect2 && result !== null)) {
