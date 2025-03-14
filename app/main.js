@@ -189,7 +189,7 @@ function handleExternal(answer, redirect) {
   }
 }
 
-function handleAppend(result, args, type, index) {
+function handleAppend(result, args, index) {
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
@@ -202,7 +202,7 @@ function handleAppend(result, args, type, index) {
   return false;
 }
 
-function handleRedirect(result, args, type, index) {
+function handleRedirect(result, args, index) {
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
@@ -290,7 +290,7 @@ function prompt() {
     }
 
     if (redirect && result !== null) {
-      handleRedirect(result, answer.split(" "), 1, index);
+      handleRedirect(result, answer.split(" "), index);
     }
 
     if (redirect && errorMessage) {
@@ -298,7 +298,7 @@ function prompt() {
     }
 
     if (redirect2) {
-      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2, index);
+      handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), index);
     }
 
     if (redirect2 && result !== "") {
@@ -306,8 +306,7 @@ function prompt() {
     }
 
     if (append && result !== null) {
-      console.log("append handle...")
-      handleAppend(result, answer.split(" "), 1, index);
+      handleAppend(result, answer.split(" "), index);
     }
 
     if (append && errorMessage) {
