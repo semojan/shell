@@ -204,7 +204,7 @@ function handleRedirect(result, args, type) {
     const filePath = args[index + 1];
     try {
       if (fs.existsSync(filePath) && fs.readFileSync(filePath, 'utf-8').trim() !== "") {
-        result = result + "\n";
+        result = "\n" + result;
       }
       fs.writeFileSync(filePath, result, { flag: type === 3 || type === 4 ? "a" : "w" });
       return null;
