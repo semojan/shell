@@ -5,29 +5,45 @@ const fs = require("fs");
 const { execSync, execFileSync } = require('child_process');
 
 const builtin = ["cd", "echo", "exit", "pwd", "type"];
+let lastCompletion = { prefix: "", count: 0, hits: [] };
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
   completer: (line) => {
-    const builtins = builtin;
+    const executables = builtin;
     const path = process.env.PATH.split(":");
 
     path.forEach((dir) => {
       try {
         const files = fs.readdirSync(dir);
-        builtin.push(...files);
+        executables.push(...files);
       } catch (err) {
         // Ignore errors reading directories
       }
     });
-    const hits = builtins
+
+    const hits = executables
       .filter((c) => c.startsWith(line))
       .map((c) => (c += " "));
 
-    if (hits.length === 0) {
+    if (lastCompletion.prefix === line) {
+      lastCompletion.count++;
+    } else {
+      lastCompletion.prefix = line;
+      lastCompletion.count = 1;
+      lastCompletion.hits = hits;
+    }
+
+    if (lastCompletion.count === 1) {
       process.stdout.write("\x07");
       return [[], line];
+    } else if (lastCompletion.count === 2) {
+      if (hits.length > 0) {
+        console.log("\n" + hits.join("  "));
+      }
+      lastCompletion.count = 0;
+      return [hits, line];
     }
 
     return [hits, line];
@@ -375,6 +391,8 @@ function prompt() {
     // if (result !== null && !redirect2 && !redirect && !append && !append2) {
     //   console.log(result);
     // }
+
+    lastCompletion = { prefix: "", count: 0, hits: [] };
     prompt();
   });
 }
