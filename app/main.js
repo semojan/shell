@@ -282,7 +282,7 @@ function prompt() {
       console.error(errorMessage);
     }
 
-    if (!redirect && !redirect2 && result !== null) {
+    if ((!redirect && !redirect2 && result !== null) || (redirect2 && !isError)) {
       console.log(result);
     }
 
