@@ -203,7 +203,10 @@ function handleRedirect(result, args, type) {
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
-      fs.writeFileSync(filePath, result + "\n", { flag: type === 3 || type === 4 ? "a" : "w" });
+      if (type !== 2) {
+        result += "\n";
+      }
+      fs.writeFileSync(filePath, result, { flag: type === 3 || type === 4 ? "a" : "w" });
       return null;
     } catch (error) {
       return `${filePath}: No such file or directory`
