@@ -23,9 +23,7 @@ const rl = readline.createInterface({
       }
     });
 
-    const hits = executables
-      .filter((c) => c.startsWith(line))
-      .map((c) => (c += " "));
+    const hits = executables.filter((c) => c.startsWith(line));
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
