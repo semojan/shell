@@ -37,6 +37,7 @@ const rl = readline.createInterface({
       process.stdout.write("\x07");
       return [[], line.trim()];
     } else if (lastCompletion.count === 2) {
+      console.log(lastCompletion)
       if (hits.length > 0) {
         console.log(hits.join("  "));
       }
