@@ -189,9 +189,15 @@ function handleExternal(answer, redirect) {
   }
 }
 
-function handleAppend(result, args, index) {
+function handleAppend(result, args, type) {
+  let index = 0;
+  if (type === 1) {
+    index = args.findIndex(arg => [">>", "1>>"].includes(arg));
+  } else if (type === 2) {
+    index = args.findIndex(arg => ["2>>"].includes(arg));
+  }
   if (index !== -1 && index + 1 < args.length) {
-    const filePath = args[index];
+    const filePath = args[index + 1];
     try {
       fs.appendFileSync(filePath, result + "\n");
       console.log(`Appending to file: ${filePath}, data: "${result}"`);
@@ -203,9 +209,15 @@ function handleAppend(result, args, index) {
   return false;
 }
 
-function handleRedirect(result, args, index) {
+function handleRedirect(result, args, type) {
+  let index = 0;
+  if (type === 1) {
+    index = args.findIndex(arg => [">", "1>"].includes(arg));
+  } else if (type === 2) {
+    index = args.findIndex(arg => ["2>"].includes(arg));
+  }
   if (index !== -1 && index + 1 < args.length) {
-    const filePath = args[index];
+    const filePath = args[index + 1];
     try {
       fs.writeFileSync(filePath, result, { flag: "w" });
       return null;
