@@ -207,7 +207,6 @@ function handleRedirect(result, args, type) {
         fs.writeFileSync(filePath, result, { flag: "w" });
       } else if (type === 3 || type === 4) {
         fs.appendFileSync(filePath, result + "\n");
-        console.log(`Appending to file: ${filePath}, data: "${result}"`);
       }
       return null;
     } catch (error) {
