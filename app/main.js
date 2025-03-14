@@ -193,7 +193,7 @@ function handleAppend(result, args, type, index) {
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
-      fs.writeFileSync(filePath, result + "\n", { flag: 'a' });
+      fs.appendFileSync(filePath, result + "\n");
       return null;
     } catch (error) {
       return `${filePath}: No such file or directory`
