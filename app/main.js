@@ -146,10 +146,13 @@ function handleFile(answer) {
 
   if (filePath) {
     try {
-      execFileSync(filePath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
-      return { isFile: true, fileResult: null };
+      const output = execFileSync(filePath, args, { encoding: "utf-8", stdio: "inherit", argv0: executable });
+      return { isFile: true, fileResult: output, isError: false, errorMessage: null };
     } catch (error) {
-      return { isFile: false, fileResult: `Error executing ${executable}` };
+      const stdoutOutput = error.stdout ? error.stdout.toString().trim() : "";
+      const stderrOutput = error.stderr ? error.stderr.toString().trim() : error.message.trim();
+
+      return { isFile: true, fileResult: stdoutOutput, errorMessage: stderrOutput, isError: true };
     }
   }
 
@@ -186,8 +189,14 @@ function handleExternal(answer, redirect) {
   }
 }
 
-function handleRedirect(result, args) {
-  const index = args.findIndex(arg => [">", "1>"].includes(arg));
+function handleRedirect(result, args, type) {
+  let index = 0;
+  if (type === 1) {
+    index = args.findIndex(arg => [">", "1>"].includes(arg));
+  } else if (type === 2) {
+    index = args.findIndex(arg => ["2>"].includes(arg));
+  }
+
   if (index !== -1 && index + 1 < args.length) {
     const filePath = args[index + 1];
     try {
@@ -205,6 +214,7 @@ function prompt() {
 
     let args = answer.split(" ").slice(1);
     const redirect = args.includes(">") || args.includes("1>");
+    const redirect2 = args.includes("2>");
 
     if (redirect) {
       const index = args.findIndex(arg => arg === ">" || arg === "1>");
@@ -251,7 +261,10 @@ function prompt() {
       result = handleType(args.join(" "));
 
     } else {
-      let { isFile, fileResult } = handleFile(answer);
+      let { isFile, fileResult, errorMessage: errMsg, isError: errFlag } = handleExternal("ls " + args.join(" "));
+      result = fileResult;
+      errorMessage = errMsg;
+      isError = errFlag;
       if (!isFile) {
         result = `${answer}: command not found`;
       } else {
@@ -260,10 +273,12 @@ function prompt() {
     }
 
     if (redirect && result !== null) {
-      handleRedirect(result, answer.split(" "));
+      handleRedirect(result, answer.split(" "), 1);
     }
 
-    if (errorMessage) {
+    if (redirect2 && errorMessage) {
+      handleRedirect(errorMessage, answer.split(" "), 2);
+    } else if (errorMessage) {
       console.error(errorMessage);
     }
 
