@@ -33,17 +33,17 @@ const rl = readline.createInterface({
       lastCompletion.hits = hits;
     }
 
-    console.log("")
     if (lastCompletion.count === 1) {
-      process.stdout.write("\x07");
+      process.stdout.write("\x07"); // Bell sound
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
       if (hits.length > 0) {
-        console.log(lastCompletion.hits.join("  ") + "this was result");
+        console.log("\n" + hits.join("  ")); // Output correctly formatted suggestions
       }
-      lastCompletion.count = 0;
+      lastCompletion.count = 1; // Keep track of state instead of resetting immediately
       return [hits, line.trim()];
     }
+
 
     return [hits, line.trim()];
   },
@@ -101,15 +101,7 @@ function handleCd(inPath) {
 
 function handleEcho(text) {
 
-  // const hasSingleQuote = text.startsWith("'");
-  // const slices = hasSingleQuote ? text.split("'") : text.split('"');
-  // const n = slices.length;
-  // if (n >= 3 && slices[0] === "" && slices[n - 1] === "") {
-  //   return slices.slice(1, n - 1).map(item => item !== "" && item.trim() === "" ? " " : item).join("");
-  // }
-
   const output = parseQuotedString(text);
-  // text = text.replace(/\s+/g, " ");
 
   return output;
 }
@@ -147,12 +139,6 @@ function handleType(command) {
       return `${command}: not found`;
     }
   }
-}
-
-function seperateQuotedFileName(quotedCmd, quote) {
-  let n = quotedCmd.length;
-  let quotedName = quotedCmd.slice(0, n - 1).join(quote) + quote;
-  return quotedName;
 }
 
 function handleFile(answer) {
@@ -354,42 +340,6 @@ function prompt() {
     if (result !== null && !redirect2 && !redirect && !append && !append2) {
       console.log(result);
     }
-    // if (redirect && result !== null) {
-    //   handleRedirect(result, answer.split(" "), 1);
-    // }
-
-    // if (redirect && errorMessage) {
-    //   console.log(errorMessage);
-    // }
-
-    // if (redirect2) {
-    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 2);
-    // }
-
-    // if (redirect2 && result !== "") {
-    //   console.log(result);
-    // }
-
-    // if (append && result !== null) {
-    //   handleRedirect(result, answer.split(" "), 3);
-    // }
-
-    // if (append && errorMessage) {
-    //   console.log(errorMessage);
-    // }
-
-    // if (append2) {
-    //   handleRedirect(errorMessage ? errorMessage : "", answer.split(" "), 4);
-    // }
-
-    // if (append2 && result !== "") {
-    //   console.log(result);
-    // }
-
-
-    // if (result !== null && !redirect2 && !redirect && !append && !append2) {
-    //   console.log(result);
-    // }
 
     lastCompletion = { prefix: "", count: 0, hits: [] };
     prompt();
