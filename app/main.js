@@ -38,11 +38,8 @@ const rl = readline.createInterface({
       process.stdout.write("\x07");
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
-      console.log("second")
-      console.log(lastCompletion)
-      console.log("second check")
       if (hits.length > 0) {
-        console.log("\n" + hits.join("  ") + "this was result");
+        console.log(hits.join("  ") + "this was result");
       }
       lastCompletion.count = 0;
       return [hits, line.trim()];
