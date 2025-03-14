@@ -222,7 +222,7 @@ function prompt() {
     const redirect = args.includes(">") || args.includes("1>");
     const redirect2 = args.includes("2>");
     const append = args.includes(">>") || args.includes("1>>");
-    const append2 = args.includes("2>");
+    const append2 = args.includes("2>>");
 
     let index = 0;
 
@@ -310,12 +310,10 @@ function prompt() {
     }
 
     if ((redirect2 && result !== "") || (append2 && result !== "")) {
-      console.log("res emplty")
       console.log(result);
     }
 
     if (result !== null && !redirect2 && !redirect && !append && !append2) {
-      console.log("res null")
       console.log(result);
     }
     // if (redirect && result !== null) {
