@@ -40,6 +40,7 @@ const rl = readline.createInterface({
 
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07"); // Bell sound
+      console.log(" ")
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
       console.log(lastCompletion.hits.join("  "));
