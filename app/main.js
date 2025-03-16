@@ -50,7 +50,7 @@ const rl = readline.createInterface({
     } else if (lastCompletion.count === 2) {
       console.log();
       console.log(hits.join("  "));
-      console.log("$ ");
+      console.log("$ " + line);
       return [[], line];
     }
 
