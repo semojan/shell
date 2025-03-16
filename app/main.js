@@ -42,7 +42,7 @@ const rl = readline.createInterface({
       process.stdout.write("\x07"); // Bell sound
       return [null, line.trim()];
     } else if (lastCompletion.count === 2) {
-      console.log(lastCompletion.hits.join("  "));
+      console.log("\n" + lastCompletion.hits.join("  ") + "\n$ " + line);
       return [lastCompletion.hits, line.trim()];
     }
     return [hits, line.trim()];
