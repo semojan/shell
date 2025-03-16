@@ -33,16 +33,27 @@ const rl = readline.createInterface({
       lastCompletion.hits = hits;
     }
 
-    console.log(lastCompletion)
-    if (lastCompletion.count === 1) {
-      process.stdout.write("\x07"); // Bell sound
-      return [null, line.trim()];
-    } else if (lastCompletion.count === 2) {
-      console.log(lastCompletion)
-      console.log("\n" + lastCompletion.hits.join("  "));
-      return [lastCompletion.hits, line.trim()];
+    if (line.trim() === "") {
+      return [builtin, line];
     }
-    return [hits, line.trim()];
+
+    if (hits.length === 0) {
+      process.stdout.write("\x07"); // Bell sound
+      return [[], line];
+    } else if (hits.length === 1) {
+      lastCompletion.count = 0;
+    } else {
+      if (lastCompletion.count === 1) {
+        process.stdout.write("\x07"); // Bell sound
+        return [[], line];
+      } else if (lastCompletion.count >= 2) {
+        console.log("\n" + hits.join("  "));
+        prompt();
+        return [[], line];
+      }
+
+      return [[], line];
+    }
   },
 });
 
@@ -338,7 +349,6 @@ function prompt() {
       console.log(result);
     }
 
-    lastCompletion = { prefix: "", count: 0, hits: [] };
     prompt();
   });
 }
