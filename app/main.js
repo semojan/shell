@@ -48,7 +48,6 @@ const rl = readline.createInterface({
         return [[], line];
       } else if (lastCompletion.count >= 2) {
         console.log("\n" + hits.join("  "));
-        prompt();
         return [[], line];
       }
 
