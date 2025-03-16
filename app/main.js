@@ -44,10 +44,13 @@ const rl = readline.createInterface({
       lastCompletion.count = 0;
     }
 
+    console.log(lastCompletion)
     if (lastCompletion.count === 1) {
       process.stdout.write("\x07"); // Bell sound
+      console.log(lastCompletion)
       return [[], line];
     } else if (lastCompletion.count === 2) {
+      console.log(lastCompletion)
       console.log();
       console.log(hits.join("  "));
       return [[], line];
