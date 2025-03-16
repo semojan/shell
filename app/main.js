@@ -54,7 +54,7 @@ const rl = readline.createInterface({
       return [[], line];
     }
 
-    return [[], line];
+    return [hits.map(c => c = c + " "), line];
   }
 });
 
