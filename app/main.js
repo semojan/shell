@@ -28,7 +28,7 @@ const rl = readline.createInterface({
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
     } else {
-      lastCompletion.prefix = line;
+      lastCompletion.prefix = line.trim();
       lastCompletion.count = 1;
       lastCompletion.hits = hits;
     }
