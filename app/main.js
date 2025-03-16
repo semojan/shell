@@ -23,7 +23,7 @@ const rl = readline.createInterface({
       }
     });
 
-    const hits = [...executables].filter((c) => c.startsWith(line.trim()));
+    const hits = [...executables].filter((c) => c.startsWith(line.trim())).sort();
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
