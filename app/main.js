@@ -42,18 +42,18 @@ const rl = readline.createInterface({
       return [[], line];
     } else if (hits.length === 1) {
       lastCompletion.count = 0;
-    } else {
-      if (lastCompletion.count === 1) {
-        process.stdout.write("\x07"); // Bell sound
-        return [[], line];
-      } else if (lastCompletion.count >= 2) {
-        console.log("\n" + hits.join("  "));
-        return [[], line];
-      }
+    }
 
+    if (lastCompletion.count === 1) {
+      process.stdout.write("\x07"); // Bell sound
+      return [[], line];
+    } else if (lastCompletion.count >= 2) {
+      console.log("\n" + hits.join("  "));
       return [[], line];
     }
-  },
+
+    return [[], line];
+  }
 });
 
 function parseQuotedString(text) {
