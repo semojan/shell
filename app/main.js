@@ -24,6 +24,11 @@ const rl = readline.createInterface({
     });
 
     const hits = [...executables].filter((c) => c.startsWith(line.trim())).sort();
+    const longestPrefix = getLongestCommonPrefix(hits);
+
+    if (longestPrefix && longestPrefix !== "") {
+      return [[longestPrefix], line];
+    }
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
@@ -55,10 +60,21 @@ const rl = readline.createInterface({
       return [[], line];
     }
 
-    return [hits.map(c => c = c + " ")
-      , line];
+    return [hits.map(c => c = c + " "), line];
   }
 });
+
+function getLongestCommonPrefix(strings) {
+  if (!strings.length) return "";
+  let prefix = strings[0];
+  for (let i = 1; i < strings.length; i++) {
+    while (!strings[i].startsWith(prefix)) {
+      prefix = prefix.slice(0, -1);
+      if (!prefix) return "";
+    }
+  }
+  return prefix;
+}
 
 function parseQuotedString(text) {
   let inSingleQuote = false;
