@@ -77,7 +77,6 @@ function getLongestCommonPrefix(strings) {
   }
 
   const isUseful = strings.some(str => str === prefix);
-  if (!isUseful) console.log("useless shit")
   return isUseful ? prefix : "";
 }
 
