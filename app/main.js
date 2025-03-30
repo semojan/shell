@@ -49,7 +49,7 @@ const rl = readline.createInterface({
       lastCompletion.count = 0;
     }
 
-    if (lastCompletion.count === 1 && hits.length > 1) {
+    if (lastCompletion.count === 1) {
       process.stdout.write("\x07"); // Bell sound
       return [[], line];
     } else if (lastCompletion.count === 2) {
@@ -66,7 +66,8 @@ const rl = readline.createInterface({
 
 function getLongestCommonPrefix(strings) {
   if (!strings.length) return "";
-  if (strings.length === 1) return "";
+  if (strings.length === 1) return strings[0];
+
   let prefix = strings[0];
   for (let i = 1; i < strings.length; i++) {
     while (!strings[i].startsWith(prefix)) {
@@ -74,8 +75,11 @@ function getLongestCommonPrefix(strings) {
       if (!prefix) return "";
     }
   }
-  return prefix;
+
+  const isUseful = strings.some(str => str === prefix);
+  return isUseful ? prefix : "";
 }
+
 
 function parseQuotedString(text) {
   let inSingleQuote = false;
