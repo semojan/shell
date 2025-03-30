@@ -29,6 +29,7 @@ const rl = readline.createInterface({
     if (longestPrefix && longestPrefix !== "") {
       return [[longestPrefix], line];
     }
+    console.log(longestPrefix)
 
     if (lastCompletion.prefix === line) {
       lastCompletion.count++;
