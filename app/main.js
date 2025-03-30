@@ -23,10 +23,14 @@ const rl = readline.createInterface({
       }
     });
 
-    const hits = [...executables].filter((c) => c.startsWith(line.trim())).sort();
-    const longestPrefix = getLongestCommonPrefix(hits);
+    let longestPrefix = "";
 
-    if (longestPrefix && longestPrefix !== "") {
+    const hits = [...executables].filter((c) => c.startsWith(line.trim())).sort();
+    if (hits.length > 1) {
+      longestPrefix = getLongestCommonPrefix(hits);
+    }
+
+    if (longestPrefix !== "") {
       return [[longestPrefix], line];
     }
 
