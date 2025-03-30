@@ -49,7 +49,7 @@ const rl = readline.createInterface({
       lastCompletion.count = 0;
     }
 
-    if (lastCompletion.count === 1) {
+    if (lastCompletion.count === 1 && hits.length > 1) {
       process.stdout.write("\x07"); // Bell sound
       return [[], line];
     } else if (lastCompletion.count === 2) {
