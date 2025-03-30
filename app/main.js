@@ -51,10 +51,12 @@ const rl = readline.createInterface({
       console.log();
       console.log(hits.join("  "));
       console.log("$ " + line);
+      prompt();
       return [[], line];
     }
 
-    return [hits.map(c => c = c + " "), line];
+    return [hits.map(c => c = c + " ")
+      , line];
   }
 });
 
