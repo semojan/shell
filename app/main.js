@@ -66,7 +66,7 @@ const rl = readline.createInterface({
 
 function getLongestCommonPrefix(strings) {
   if (!strings.length) return "";
-  if (strings.length === 1) return strings[0];
+  if (strings.length === 1) return "";
 
   let prefix = strings[0];
   for (let i = 1; i < strings.length; i++) {
